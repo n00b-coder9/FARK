@@ -1,0 +1,27 @@
+{
+  "name": "fark",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install": "cd ./client && npm install",
+    "start-client": "cd ./client && npm start",
+    "start-server": "nodemon index.js --ignore client/",
+    "dev": "concurrently --kill-others-on-fail \"npm run start-server\" \"npm run start-client\"",
+    "start": "npm run start-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "concurrently": "^5.3.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-graphql": "^0.11.0",
+    "graphql": "^15.3.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.7",
+    "nodemon": "^2.0.4"
+  }
+}

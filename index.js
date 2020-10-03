@@ -10,8 +10,7 @@ dotenv.config();
 const app = express();
 const BASE_URL = '/graphql';
 
-const PORT = process.env.PORT || 5000;
-const GRAPHIQLPORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 // Parse the json body
 app.use(express.json());
@@ -41,10 +40,9 @@ mongoose
     // eslint-disable-next-line no-console
     console.log('Connected to mongodb!');
     // eslint-disable-next-line no-console
-    app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+    app.listen(PORT, () => console.log(`Listening on port ${PORT}/graphql to GraphiQl`));
     // eslint-disable-next-line no-console
-    app.listen(GRAPHIQLPORT, () => console.log(`Listening to Graphiql on port ${GRAPHIQLPORT}`));
-  })
+    })
   .catch((err) => {
     // If not connected, exit the process
     // eslint-disable-next-line no-console

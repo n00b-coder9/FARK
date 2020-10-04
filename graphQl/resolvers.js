@@ -1,23 +1,28 @@
-const bcrypt = require('bcrypt');
-const validator = require('validator');
-// const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-
+const bcrypt = require("bcrypt");
+const validator = require("validator");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 module.exports = {
-  async createUser({ UserInput }, req) {
+  async signUp({ UserInput }, req) {
     const errors = [];
     if (!validator.isEmail(UserInput.email)) {
-      errors.push({ message: ' Email is invalid' });
+      errors.push({ message: " Email is invalid" });
     }
     if (
-      validator.isEmpty(UserInput.password) || !validator.isLength(UserInput.password, { min: 5 })
+      validator.isEmpty(UserInput.password) ||
+      !validator.isLength(UserInput.password, { min: 5 })
     ) {
-      errors.push({ message: 'Password too short' });
+      errors.push({ message: "Password too short" });
     }
     if (errors.length > 0) {
-      const error = new Error('Invalid Input');
+      const error = new Error("Invalid Input");
       error.data = errors;
       error.code = 422;
+      throw error;
+    }
+    const existinguser = await User.findOne({ email: UserInput.email });
+    if (existinguser) {
+      const error = new Error("User already exists!");
       throw error;
     }
     const password = await bcrypt.hash(UserInput.password, 12);
@@ -26,6 +31,31 @@ module.exports = {
       password,
       name: UserInput.name,
     });
-    return user;
+    const createdUser = await user.save();
+    console.log(createdUser);
+    return createdUser;
+  },
+  async login({ email, password }) {
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      const error = new Error("User does not exist");
+      throw error;
+    }
+    const isEqual = await bcrypt.compare(password, user.password);
+    if (!isEqual) {
+      const error = new Error("Wrong Password");
+      throw error;
+    }
+    const token = jwt.sign(
+      {
+        userId: user.id,
+        email: user.email,
+      },
+      "somesecretsecrettoken",
+      {
+        expiresIn: "30 days",
+      }
+    );
+    return {token:token.toString() ,userId:user.id.toString()};
   },
 };

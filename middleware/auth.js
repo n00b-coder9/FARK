@@ -1,15 +1,16 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
+// eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
-  const authHeader = req.get("Authorization");
+  const authHeader = req.get('Authorization');
   if (!authHeader) {
     req.isAuth = false;
     return next();
   }
-  const token = authHeader.split(" ")[1];
+  const token = authHeader.split(' ')[1];
   let decodedToken;
   try {
-    decodedToken = jwt.verify(token, "somesecretsecrettoken");
+    decodedToken = jwt.verify(token, 'somesecretsecrettoken');
   } catch {
     req.isAuth = false;
     return next();

@@ -1,19 +1,15 @@
 const bcrypt = require('bcrypt');
-const validator = require('validator');
 const jwt = require('jsonwebtoken');
+const validator = require('../validator/validator');
 const User = require('../models/User');
 
 module.exports = {
-  // eslint-disable-next-line no-unused-vars
-  async signUp({ UserInput }, req) {
+  async signUp({ UserInput }) {
     const errors = [];
     if (!validator.isEmail(UserInput.email)) {
-      errors.push({ message: ' Email is invalid' });
+      errors.push({ message: 'Email is invalid' });
     }
-    if (
-      validator.isEmpty(UserInput.password)
-      || !validator.isLength(UserInput.password, { min: 5 })
-    ) {
+    if (!validator.isPasswordValid(UserInput.password)) {
       errors.push({ message: 'Password too short' });
     }
     if (errors.length > 0) {
@@ -22,39 +18,37 @@ module.exports = {
       error.code = 422;
       throw error;
     }
-    const existinguser = await User.findOne({ email: UserInput.email });
-    if (existinguser) {
-      const error = new Error('User already exists!');
-      throw error;
+    const userExists = await User.findOne({ email: UserInput.email }) !== null;
+    if (userExists) {
+      throw new Error('User already exists!');
     }
-    const password = await bcrypt.hash(UserInput.password, 12);
+    const salt = parseInt(process.env.SALT, 10);
+    const password = await bcrypt.hash(UserInput.password, salt);
+
     const user = new User({
       email: UserInput.email,
       password,
       name: UserInput.name,
     });
-    const createdUser = await user.save();
-    return createdUser;
+    return user.save();
   },
   async login({ email, password }) {
     const user = await User.findOne({ email });
-    if (!user) {
-      const error = new Error('User does not exist');
-      throw error;
+    if (user === null) {
+      throw new Error('User does not exist');
     }
-    const isEqual = await bcrypt.compare(password, user.password);
-    if (!isEqual) {
-      const error = new Error('Wrong Password');
-      throw error;
+    const passwordsMatch = await bcrypt.compare(password, user.password);
+    if (passwordsMatch === false) {
+      throw new Error('Wrong Password');
     }
     const token = jwt.sign(
       {
         userId: user.id,
         email: user.email,
       },
-      'somesecretsecrettoken',
+      process.env.TOKEN_PRIVATE_KEY,
       {
-        expiresIn: '30 days',
+        expiresIn: process.env.TOKEN_EXPIRY_TIME,
       },
     );
     return { token: token.toString(), userId: user.id.toString() };

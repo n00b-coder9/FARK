@@ -16,6 +16,8 @@ module.exports = buildSchema(`
         name : String!
         email : String!
         password : String!
+        createdAt : String!
+        updatedAt : String!
         urls : [Url!]
     }
 
@@ -30,7 +32,7 @@ module.exports = buildSchema(`
     }
     type AuthData{
         token : String!
-        user : User!
+        userId : String!
     }
     input UserInputData{
         name : String!
@@ -49,7 +51,7 @@ module.exports = buildSchema(`
         urls : PostData!
     }
     type RootMutation{
-        createUser(UserInput : UserInputData) : User!
+        signUp(UserInput : UserInputData) : User!
         createUrl(postInput : PostInputData) : Url!
     }
     schema {

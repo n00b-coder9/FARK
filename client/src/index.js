@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
+import { ApolloProvider,Mutation } from "react-apollo";
+import { ApolloClient } from "apollo-client";
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
 import { gql, useMutation } from "@apollo/client";

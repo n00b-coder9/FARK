@@ -16,7 +16,19 @@ const PORT = process.env.PORT || 8080;
 app.use(express.json());
 // Parse url encoded form data
 app.use(express.urlencoded({ extended: true }));
-
+// eslint-disable-next-line consistent-return
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'OPTIONS, GET, POST, PUT, PATCH, DELETE',
+  );
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
 app.use(
   BASE_URL,
   graphqlHTTP({
@@ -42,7 +54,7 @@ mongoose
     // eslint-disable-next-line no-console
     app.listen(PORT, () => console.log(`Listening on port ${PORT}/graphql to GraphiQl`));
     // eslint-disable-next-line no-console
-    })
+  })
   .catch((err) => {
     // If not connected, exit the process
     // eslint-disable-next-line no-console

@@ -1,12 +1,12 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const validator = require('../validator/validator');
+const validator = require('../validator');
 const User = require('../models/User');
 
 module.exports = {
   async signUp({ UserInput }) {
     const errors = [];
-    if (!validator.isEmail(UserInput.email)) {
+    if (!validator.isEmailValid(UserInput.email)) {
       errors.push({ message: 'Email is invalid' });
     }
     if (!validator.isPasswordValid(UserInput.password)) {

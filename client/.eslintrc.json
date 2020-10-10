@@ -1,0 +1,38 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "root": true,
+    "extends": [
+        "react-app",
+        "plugin:react/recommended",
+        "google"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "linebreak-style": "off",
+        "max-len": [
+            2,
+            100,
+            {
+                "ignoreRegExpLiterals": true
+            }
+        ],
+        "require-jsdoc": "off",
+        "no-console": "error"
+    }
+}

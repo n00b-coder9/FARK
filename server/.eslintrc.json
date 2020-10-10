@@ -1,0 +1,24 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true
+    },
+    "root": true,
+    "extends": [
+        "google"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 12
+    },
+    "rules": {
+        "linebreak-style": "off",
+        "max-len": [
+            2,
+            100,
+            {"ignoreRegExpLiterals": true}
+        ],
+        "require-jsdoc": "off",
+        "no-console": "error"
+    }
+}

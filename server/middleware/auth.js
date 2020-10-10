@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-// eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
   const authHeader = req.get('Authorization');
   if (!authHeader) {
@@ -11,7 +10,7 @@ module.exports = (req, res, next) => {
   let decodedToken;
   try {
     decodedToken = jwt.verify(token, process.env.TOKEN_PRIVATE_KEY);
-  } catch {
+  } catch (_) {
     req.isAuth = false;
     return next();
   }

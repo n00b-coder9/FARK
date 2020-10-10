@@ -7,6 +7,8 @@ import {ApolloClient} from 'apollo-client';
 import {createHttpLink} from 'apollo-link-http';
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import * as serviceWorker from './serviceWorker';
+import {CssBaseline, ThemeProvider} from '@material-ui/core';
+import theme from './theme';
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:8080/graphql',
@@ -17,9 +19,12 @@ const client = new ApolloClient({
 });
 
 ReactDOM.render(
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>,
+    <ThemeProvider theme={theme}>
+      <CssBaseline/>
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>
+    </ThemeProvider>,
     document.getElementById('root'),
 );
 

@@ -1,5 +1,5 @@
 import React from 'react';
-// import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import clsx from 'clsx';
 import {
@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
 function Navigation() {
   // Use the styles
   const classes = useStyles();
-  //   const location = useLocation();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const isDrawerOpen = useSelector((state) => state.drawer.isOpen);
@@ -109,7 +109,7 @@ function Navigation() {
     { title: 'Home', to: '/', icon: <HomeIcon /> },
   ];
 
-  // Open/cose the side navigation drawer
+  // Open/close the side navigation drawer
   const toggleDrawer = (open) => (event) => {
     if (
       event &&
@@ -125,6 +125,7 @@ function Navigation() {
   return (
     <div className={classes.root}>
       <CssBaseline />
+
       {/* Top nav bar */}
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
@@ -153,6 +154,7 @@ function Navigation() {
         }}
       >
         <div className={classes.toolbar} />
+        {/* Toggle drawer open */}
         <div style={
           { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '4px' }
         }>
@@ -164,18 +166,18 @@ function Navigation() {
 
         {/* List all the options to be shown in the drawer */}
         <List component="nav" style={{ width: '100%' }}>
-          {/* {list.map((item, pos) => (
-            // <Link
-            //   key={pos}
-            //   //   to={{ pathname: item.to, state: { from: location.pathname } }}
-            //   className={classes.linkDefault}
-            // >
-            //   <ListItem button>
-            //     <ListItemIcon>{item.icon}</ListItemIcon>
-            //     <ListItemText primary={item.title} />
-            //   </ListItem>
-            // </Link>
-          ))} */}
+          {list.map((item, pos) => (
+            <Link
+              key={pos}
+              to={{ pathname: item.to, state: { from: location.pathname } }}
+              className={classes.linkDefault}
+            >
+              <ListItem button>
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.title} />
+              </ListItem>
+            </Link>
+          ))}
         </List>
       </Drawer>
     </div>

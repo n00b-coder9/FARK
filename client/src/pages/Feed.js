@@ -1,9 +1,9 @@
 import React from 'react';
 
 const feed=(props)=>{
-    return (<div>
+  return (<div>
         This is feed page
-    </div>)
+  </div>);
 };
 
 export default feed;

@@ -1,13 +1,13 @@
 const loginQuery=(authData)=>{
-    const graphqlQuery = {
-        query:`
+  const graphqlQuery = {
+    query: `
       query{
         login(email:"${authData.email}", password:"${authData.password}")
         {
           token
           userId
         }
-      }`};
-    return graphqlQuery;
-}
+      }` };
+  return graphqlQuery;
+};
 export default loginQuery;

@@ -7,46 +7,46 @@ class Signup extends Component {
       email: {
         value: '',
         isValid: false,
-        validation: [validator.isRequired , validator.isEmailValid]
+        validation: [validator.isRequired, validator.isEmailValid],
       },
       name: {
         value: '',
         isValid: false,
-        validation: [validator.isRequired]
+        validation: [validator.isRequired],
       },
       password: {
         value: '',
         isValid: false,
-        validation :[validator.isRequired,validator.isPasswordValid]
-      }
+        validation: [validator.isRequired, validator.isPasswordValid],
+      },
     },
-    isFormValid:false
+    isFormValid: false,
   }
   inputchangeHandler= (input, value)=>{
-    this.setState(prevState => {
+    this.setState((prevState) => {
       let isValid = true;
-      for (const validation of prevState.SignupForm[input].validation)
+      for (const validation of prevState.SignupForm[input].validation) {
         isValid = isValid && validation(value);
+      }
       const updatedForm = {
         ...prevState.SignupForm,
         [input]: {
           ...prevState.SignupForm[input],
           value,
-          isValid
-        }
-      }
+          isValid,
+        },
+      };
       let isFormValid = true;
-      for (const input in prevState.SignupForm)
-      {
+      for (const input in prevState.SignupForm) {
         isFormValid = isFormValid && input.isValid;
       }
 
 
       return {
         SignupForm: updatedForm,
-        isFormValid
-      }
-    })
+        isFormValid,
+      };
+    });
   }
   render() {
     return (<div>
@@ -54,10 +54,10 @@ class Signup extends Component {
         this.props.onSignUp(e, {
           email: this.state.SignupForm.email.value,
           name: this.state.SignupForm.name.value,
-          password: this.state.SignupForm.password.value
-        })
+          password: this.state.SignupForm.password.value,
+        });
       }}
-        style={{ flex: 1 }}>
+      style={{ flex: 1 }}>
         <p>NAME</p>
         <Input
           label='name'
@@ -88,14 +88,14 @@ class Signup extends Component {
           name='password'
           value={this.state.SignupForm['password'].value}
           placeholder='your password'
-          onChange={this.inputchangeHandler} 
+          onChange={this.inputchangeHandler}
         />
         <button title="SUBMIT" type='submit' name='SUBMIT'>
           SUBMIT
-      </button>
+        </button>
       </form>
     </div>
-    )
+    );
   }
 }
 export default Signup;

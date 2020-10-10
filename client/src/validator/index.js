@@ -4,10 +4,13 @@ function isPasswordValid(password) {
 }
 function isRequired(value) {
   const len = value.length;
+<<<<<<< HEAD
+=======
   return len!==0;
 }
 function isRequired(value) {
   const len = value.length;
+>>>>>>> 25e2f49... Added login-signup logic
   if (len === 0) return false;
   return true;
 }

@@ -4,13 +4,13 @@ const validator = require('../validator');
 const User = require('../models/User');
 
 module.exports = {
-  async signUp({UserInput}) {
+  async signUp({ UserInput }) {
     const errors = [];
     if (!validator.isEmailValid(UserInput.email)) {
-      errors.push({message: 'Email is invalid'});
+      errors.push({ message: 'Email is invalid' });
     }
     if (!validator.isPasswordValid(UserInput.password)) {
-      errors.push({message: 'Password too short'});
+      errors.push({ message: 'Password too short' });
     }
     if (errors.length > 0) {
       const error = new Error('Invalid Input');
@@ -18,10 +18,11 @@ module.exports = {
       error.code = 422;
       throw error;
     }
-    const userExists = await User.findOne({email: UserInput.email}) !== null;
+    const userExists = await User.findOne({ email: UserInput.email }) !== null;
     if (userExists) {
       throw new Error('User already exists!');
     }
+
     const salt = parseInt(process.env.SALT, 10);
     const password = await bcrypt.hash(UserInput.password, salt);
 
@@ -32,8 +33,8 @@ module.exports = {
     });
     return user.save();
   },
-  async login({email, password}) {
-    const user = await User.findOne({email});
+  async login({ email, password }) {
+    const user = await User.findOne({ email });
     if (user === null) {
       throw new Error('User does not exist');
     }
@@ -51,6 +52,6 @@ module.exports = {
           expiresIn: process.env.TOKEN_EXPIRY_TIME,
         },
     );
-    return {token: token.toString(), userId: user.id.toString()};
+    return { token: token.toString(), userId: user.id.toString() };
   },
 };

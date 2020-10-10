@@ -15,11 +15,7 @@ class Login extends Component {
         validation :[validator.isRequired,validator.isPasswordValid]
       }
     },
-<<<<<<< HEAD
     isFormValid:false
-=======
-    formIsValid:false
->>>>>>> 25e2f49... Added login-signup logic
   }
   inputchangeHandler= (input, value)=>{
     this.setState(prevState => {
@@ -30,7 +26,6 @@ class Login extends Component {
         ...prevState.LoginForm,
         [input]: {
           ...prevState.LoginForm[input],
-<<<<<<< HEAD
           value,
           isValid
         }
@@ -39,26 +34,12 @@ class Login extends Component {
       for (const input in prevState.LoginForm)
       {
         isFormValid = isFormValid && input.isValid;
-=======
-          value: value,
-          isValid:isValid
-        }
-      }
-      let formIsValid = true;
-      for (const input in prevState.LoginForm)
-      {
-        formIsValid = formIsValid && input.isValid;
->>>>>>> 25e2f49... Added login-signup logic
       }
 
 
       return {
         LoginForm: updatedForm,
-<<<<<<< HEAD
         isFormValid:isFormValid
-=======
-        formIsValid:formIsValid
->>>>>>> 25e2f49... Added login-signup logic
       }
     })
   }

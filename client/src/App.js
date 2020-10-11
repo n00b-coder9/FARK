@@ -33,8 +33,7 @@ function App() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const loginHandler = (event, authdata) => {
-    event.preventDefault();
+  const loginHandler = (authdata) => {
     const graphqlQuery = loginQuery(authdata);
     fetch('http://localhost:8080/graphql',
         {
@@ -45,7 +44,7 @@ function App() {
           body: JSON.stringify(graphqlQuery),
         })
         .then((res) => {
-          return res.json;
+          return res.json();
         },
         ).then((resData) => {
           if (resData.errors && resData.errors[0].status === 422) {

@@ -23,7 +23,7 @@ module.exports = {
       throw new Error('User already exists!');
     }
 
-    const salt = parseInt(process.env.SALT, 10);
+    const salt = parseInt(process.env.SALT, 12);
     const password = await bcrypt.hash(UserInput.password, salt);
 
     const user = new User({

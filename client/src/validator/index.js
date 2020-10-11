@@ -14,7 +14,7 @@ function isEmailValid(email) {
   return re.test(String(email).toLowerCase());
 }
 
-export default {
+module.exports = {
   isPasswordValid,
   isEmailValid,
   isRequired,

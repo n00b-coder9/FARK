@@ -47,7 +47,8 @@ class Login extends Component {
   render() {
     return (<div>
       <form onSubmit={(e) => {
-        this.props.onLogin(e, {
+        e.preventDefault();
+        this.props.onLogin( {
           email: this.state.LoginForm.email.value,
           password: this.state.LoginForm.password.value,
         });

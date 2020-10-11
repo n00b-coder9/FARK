@@ -5,7 +5,6 @@
     },
     "root": true,
     "extends": [
-        "react-app",
         "plugin:react/recommended",
         "google"
     ],
@@ -34,6 +33,9 @@
         ],
         "require-jsdoc": "off",
         "no-console": "error",
-        "object-curly-spacing": ["error", "always"]
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ]
     }
 }

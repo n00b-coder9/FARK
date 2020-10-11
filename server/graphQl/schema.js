@@ -30,9 +30,11 @@ module.exports = buildSchema(`
         email : String!
         permissions : [String!]!
     }
-    type AuthData{
+    type AuthToken{
         token : String!
-        userId : String!
+    }
+    type GenericMessage{
+        message: String!
     }
     input UserInputData{
         name : String!
@@ -47,11 +49,11 @@ module.exports = buildSchema(`
         totalurls : Int!
     }
     type RootQuery{
-        login(email : String! , password : String!) : AuthData!
+        login(email : String! , password : String!) : AuthToken!
         urls : PostData!
     }
     type RootMutation{
-        signUp(UserInput : UserInputData) : User!
+        signUp(UserInput : UserInputData) : GenericMessage!
         createUrl(postInput : PostInputData) : Url!
     }
     schema {

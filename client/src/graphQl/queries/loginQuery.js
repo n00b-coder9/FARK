@@ -5,7 +5,6 @@ const loginQuery=(authData)=>{
         login(email:"${authData.email}", password:"${authData.password}")
         {
           token
-          userId
         }
       }` };
   return graphqlQuery;

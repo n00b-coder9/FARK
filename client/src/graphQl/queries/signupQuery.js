@@ -8,12 +8,7 @@ const signupQuery=(UserInputData)=>{
           password:"${UserInputData.password}"
         })
         {
-        _id
-        name
-        email
-        createdAt
-        updatedAt
-        password
+          message
         }
       }
       ` };

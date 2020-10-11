@@ -1,5 +1,5 @@
 const express = require('express');
-const {graphqlHTTP} = require('express-graphql');
+const { graphqlHTTP } = require('express-graphql');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const FarkGraphQLSchema = require('./graphQl/schema');
@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 8080;
 // Parse the json body
 app.use(express.json());
 // Parse url encoded form data
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');
@@ -34,7 +34,7 @@ app.use(
     }),
 );
 // set up the mongodb connection
-const MONGODB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017/agourse';
+const MONGODB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017/fark';
 
 // Connect to mongodb
 mongoose

@@ -1,6 +1,6 @@
 const signupQuery=(UserInputData)=>{
-    const graphqlQuery = {
-        query:`
+  const graphqlQuery = {
+    query: `
       mutation{
         signUp(UserInput:{
           email:"${UserInputData.email}",
@@ -16,7 +16,7 @@ const signupQuery=(UserInputData)=>{
         password
         }
       }
-      `};
-      return graphqlQuery;
-}
+      ` };
+  return graphqlQuery;
+};
 export default signupQuery;

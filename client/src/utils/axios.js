@@ -20,7 +20,7 @@ let axios;
 const options = {
   baseURL: `${process.env.NODE_ENV === 'production' ?
         'https://fark.herokuapp.com' :
-        'http://localhost:3000'
+        'http://localhost:8080'
   }/graphql/`,
   headers: {
     'x-auth-token': null,

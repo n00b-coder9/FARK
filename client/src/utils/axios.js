@@ -23,7 +23,7 @@ const options = {
         'http://localhost:8080'
   }/graphql/`,
   headers: {
-    'x-auth-token': null,
+    'Authorization': null,
   },
 };
 
@@ -32,11 +32,11 @@ axios = ax.create(options);
 // Changing auth header
 // Immediately configure axios for next request
 export const setAuthToken = (token) => {
-  options.headers['x-auth-token'] = token;
+  options.headers['Authorization'] = token;
   axios = ax.create(options);
 };
 
 // Get auth header
-export const getAuthToken = () => options.headers['x-auth-token'];
+export const getAuthToken = () => options.headers['Authorization'];
 
 export default () => Object.freeze(axios);

@@ -1,11 +1,16 @@
 import React, { useEffect } from 'react';
 import { Route, withRouter, Switch } from 'react-router-dom';
-import './App.css';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+
 import Navigation from './components/Navigation';
-import { fetchIsDrawerOpen } from './redux/slices/drawer';
 import Auth from './components/auth';
+import Snackbar from './components/common/Snackbar';
+
+import { setIsSnackbarOpen } from './redux/slices/snackbar';
+import { fetchIsDrawerOpen } from './redux/slices/drawer';
+
+import './App.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,7 +35,9 @@ function App() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  // Get the drawer open state
+  const snackbarState = useSelector((state) => state.snackbar);
+
+  // Fetch the initial drawer open state
   useEffect(() => {
     dispatch(fetchIsDrawerOpen());
   }, [dispatch]);
@@ -45,11 +52,21 @@ function App() {
 
         {/* App content starts here */}
         <Switch>
+          {/* Auth related routes */}
           <Route path='/auth'>
             <Auth/>
           </Route>
         </Switch>
       </main>
+
+      {/* App wide single snackbar */}
+      <Snackbar
+        open={snackbarState.isOpen}
+        message={snackbarState.message}
+        severity={snackbarState.severity}
+        onClose={
+          () => dispatch(setIsSnackbarOpen({ isOpen: false }))
+        } />
     </div>
   );
 }

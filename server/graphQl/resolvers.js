@@ -8,6 +8,9 @@ const User = require('../models/User');
 const signUp = async ({ UserInput }) => {
   const errors = [];
   // Validate input
+  if (!validator.isNameOfUserValid(UserInput.name)) {
+    errors.push({ 'key': 'name', 'message': 'Please enter a valid name' });
+  }
   if (!validator.isEmailValid(UserInput.email)) {
     errors.push({ 'key': 'email', 'message': 'Please enter a valid email' });
   }

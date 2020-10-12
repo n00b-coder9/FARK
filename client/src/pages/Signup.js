@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import * as validator from '../validator';
+import * as validator from '../utils/validator';
 import Input from '../components/form/Input';
 class Signup extends Component {
   state = {

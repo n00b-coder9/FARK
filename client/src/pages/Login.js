@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Input from '../components/form/Input';
-import * as validator from '../validator';
+import * as validator from '../utils/validator';
 class Login extends Component {
   state = {
     LoginForm: {

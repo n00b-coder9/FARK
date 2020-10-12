@@ -1,0 +1,30 @@
+a,
+button {
+	color: inherit;
+	outline: none !important;
+	text-decoration: none !important;
+}
+
+a,
+button:focus {
+	outline: none !important;
+	text-decoration: none !important;
+}
+
+a,
+button:active {
+	outline: none !important;
+	text-decoration: none !important;
+}
+
+a,
+button:blur {
+	outline: none !important;
+	text-decoration: none !important;
+}
+
+a,
+button:hover {
+	outline: none !important;
+	text-decoration: none !important;
+}

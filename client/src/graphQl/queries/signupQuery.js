@@ -1,4 +1,4 @@
-const signupQuery=(UserInputData)=>{
+const signupQuery = (UserInputData) => {
   const graphqlQuery = {
     query: `
       mutation{

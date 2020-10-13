@@ -18,6 +18,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import HomeIcon from '@material-ui/icons/Home';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import LockIcon from '@material-ui/icons/Lock';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { setIsDrawerOpen } from '../redux/slices/drawer';
 
@@ -54,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.drawer + 1,
   },
   menuButton: {
-    marginRight: 36,
+    marginRight: theme.spacing(2),
   },
   hide: {
     display: 'none',
@@ -103,10 +105,19 @@ function Navigation() {
   const dispatch = useDispatch();
 
   const isDrawerOpen = useSelector((state) => state.drawer.isOpen);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   // List of options in the drawer
   const list = [
-    { title: 'Home', to: '/', icon: <HomeIcon /> },
+    { type: 'entry', title: 'Home', to: '/', icon: <HomeIcon /> },
+    { type: 'entry', title: 'Dashboard', to: '/dashboard', icon: <DashboardIcon /> },
+    { type: 'divider' },
+    {
+      type: 'entry',
+      title: `${isLoggedIn ? 'Logout' : 'Login'}`,
+      to: `${isLoggedIn ? '/auth/logout' : '/auth'}`,
+      icon: <LockIcon />,
+    },
   ];
 
   // Open/close the side navigation drawer
@@ -131,9 +142,9 @@ function Navigation() {
         <Toolbar>
           {/* Branding */}
           <Typography variant="h6" className={classes.title}>
-            {/* <Link to="/" className={classes.linkDefault}> */}
+            <Link to="/" className={classes.linkDefault}>
                 Fark
-            {/* </Link> */}
+            </Link>
           </Typography>
         </Toolbar>
       </AppBar>
@@ -166,8 +177,16 @@ function Navigation() {
 
         {/* List all the options to be shown in the drawer */}
         <List component="nav" style={{ width: '100%' }}>
-          {list.map((item, pos) => (
-            <Link
+          {list.map((item, pos) => {
+            // Render divider
+            if (item.type === 'divider') {
+              return (
+                <Divider key={pos}/>
+              );
+            };
+
+            // Render link
+            return <Link
               key={pos}
               to={{ pathname: item.to, state: { from: location.pathname } }}
               className={classes.linkDefault}
@@ -176,8 +195,8 @@ function Navigation() {
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.title} />
               </ListItem>
-            </Link>
-          ))}
+            </Link>;
+          })}
         </List>
       </Drawer>
     </div>

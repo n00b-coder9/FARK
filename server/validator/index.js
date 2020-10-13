@@ -1,6 +1,6 @@
 function isPasswordValid(password) {
   const len = password.length;
-  return len >= 5;
+  return len >= 7;
 }
 
 function isRequired(value) {

@@ -32,6 +32,7 @@
             }
         ],
         "require-jsdoc": "off",
+        "valid-jsdoc": "off",
         "no-console": "error",
         "object-curly-spacing": [
             "error",

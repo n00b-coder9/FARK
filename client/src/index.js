@@ -14,12 +14,12 @@ const reduxStore = configureStore({ reducer: rootReducer });
 
 ReactDOM.render(
     <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Provider store={reduxStore}>
+      <Provider store={reduxStore}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
           <App />
-        </Provider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </Provider>
     </BrowserRouter>,
     document.getElementById('root'),
 );

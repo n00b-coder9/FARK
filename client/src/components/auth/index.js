@@ -1,10 +1,12 @@
 import React from 'react';
-import { Link, Route, Switch, useLocation } from 'react-router-dom';
+import { Link, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import CreateIcon from '@material-ui/icons/Create';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
-import { Button, makeStyles } from '@material-ui/core';
+import { Backdrop, Button, CircularProgress, makeStyles } from '@material-ui/core';
 import Register from './Register';
 import Login from './Login';
+import { useSelector } from 'react-redux';
+import Logout from './Logout';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,22 +24,39 @@ const useStyles = makeStyles((theme) => ({
 
 function Auth() {
   const classes = useStyles();
+
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
   const location = useLocation();
   // grab the 'from' part and pass it as a prop to the <Login>
   const { from: prevPath } = location.state || {
     from: '/dashboard',
   };
 
+  // Login state hasn't been fetched yet
+  if (isLoggedIn === null) {
+    return <Backdrop open={true} ><CircularProgress/></Backdrop>;
+  };
+
   return (
     <Switch>
-      {/* Route to register page if `/auth/register` */}
+      {isLoggedIn &&
+        <Route exact path="/auth/logout">
+          <Logout />
+        </Route>
+      }
+
+      {/* If user is logged in, redirect to dashboard and forbid any other functionality */}
+      {isLoggedIn && <Redirect to="/dashboard" />}
+
       <Route exact path="/auth/register">
         <Register />
       </Route>
-      {/* Route to login page if `/auth/login` */}
+
       <Route exact path="/auth/login">
         <Login />
       </Route>
+
       {/* Show login/register option if `/auth` */}
       <Route exact path="/auth">
         <div className={classes.root}>

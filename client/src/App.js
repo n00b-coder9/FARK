@@ -11,6 +11,7 @@ import { setIsSnackbarOpen } from './redux/slices/snackbar';
 import { fetchIsDrawerOpen } from './redux/slices/drawer';
 
 import './App.css';
+import { fetchLogin } from './redux/slices/auth';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,15 +41,16 @@ function App() {
   // Fetch the initial drawer open state
   useEffect(() => {
     dispatch(fetchIsDrawerOpen());
+    dispatch(fetchLogin());
   }, [dispatch]);
 
   return (
     <div className={classes.root}>
       <Navigation />
 
-      <div className={classes.toolbar} />
       <main
         className={classes.content}>
+        <div className={classes.toolbar} />
 
         {/* App content starts here */}
         <Switch>

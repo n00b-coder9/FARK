@@ -142,9 +142,9 @@ function Navigation() {
         <Toolbar>
           {/* Branding */}
           <Typography variant="h6" className={classes.title}>
-            {/* <Link to="/" className={classes.linkDefault}> */}
+            <Link to="/" className={classes.linkDefault}>
                 Fark
-            {/* </Link> */}
+            </Link>
           </Typography>
         </Toolbar>
       </AppBar>

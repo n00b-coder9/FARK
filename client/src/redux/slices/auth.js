@@ -2,26 +2,41 @@ import { createSlice } from '@reduxjs/toolkit';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import jwtDecode from 'jwt-decode';
 
-import loginQuery from '../../graphQl/queries/loginQuery';
-import axios from '../../utils/axios';
+import { setAuthToken } from '../../utils/axios';
 
-import { LOGIN } from '../actionTypes';
+import { LOGIN, FETCH_LOGIN } from '../actionTypes';
 
-export const login = createAsyncThunk(LOGIN,
-    async (userData) => {
-      const graphqlQuery = loginQuery(userData);
-      const response = await axios().post('/', graphqlQuery);
-      return response.data;
+export const setLogin = createAsyncThunk(LOGIN,
+    async (payload) => {
+      const { isLoggedIn, authToken } = payload;
+      localStorage.setItem('authToken', authToken);
+      setAuthToken(authToken);
+      return {
+        isLoggedIn, authToken, user: authToken !== null ? jwtDecode(authToken) : null,
+      };
+    });
+
+export const fetchLogin = createAsyncThunk(FETCH_LOGIN,
+    async () => {
+      const authToken = localStorage.getItem('authToken');
+      return {
+        isLoggedIn: authToken !== 'null',
+        authToken,
+        user: authToken !== 'null' ? jwtDecode(authToken) : null,
+      };
     });
 
 export const authSlice = createSlice({
   name: 'auth',
-  initialState: { token: null, isLoggedIn: false, user: null },
+  initialState: { authToken: null, isLoggedIn: null, user: null },
   extraReducers: {
-    [login.fulfilled]: (state, action) => {
-      state.token = action.payload;
-      state.isLoggedIn = true;
-      state.user = jwtDecode(action.payload);
-    },
+    [setLogin.fulfilled]: (state, action) => ({
+      ...state,
+      ...action.payload,
+    }),
+    [fetchLogin.fulfilled]: (state, action) => ({
+      ...state,
+      ...action.payload,
+    }),
   },
 });

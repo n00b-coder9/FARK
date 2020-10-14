@@ -26,7 +26,6 @@ function Auth() {
   const classes = useStyles();
 
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-
   const location = useLocation();
   // grab the 'from' part and pass it as a prop to the <Login>
   const { from: prevPath } = location.state || {

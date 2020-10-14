@@ -9,9 +9,7 @@ import theme from './theme';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import rootReducer from './redux/rootReducer';
-
 const reduxStore = configureStore({ reducer: rootReducer });
-
 ReactDOM.render(
     <BrowserRouter>
       <Provider store={reduxStore}>

@@ -43,7 +43,15 @@ const validateEmail = (email) => {
   }
   return { isValid: true };
 };
-
+const validateUrl = (url)=>{
+  const expression =
+  /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+  const regex = new RegExp(expression);
+  if (!regex.test(url)) {
+    return { isValid: false, message: 'Please enter a valid Url' };
+  }
+  return { isValid: true };
+};
 module.exports = {
   isPasswordValid,
   isEmailValid,
@@ -51,4 +59,5 @@ module.exports = {
   validateName,
   validatePassword,
   validateEmail,
+  validateUrl,
 };

@@ -62,7 +62,6 @@ const login = async ({ email, password }) => {
     error.code = 401;
     throw error;
   }
-
   // Generate and return the token
   const token = jwt.sign(
       {

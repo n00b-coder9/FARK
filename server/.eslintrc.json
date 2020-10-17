@@ -13,6 +13,8 @@
     },
     "rules": {
         "linebreak-style": "off",
+        "arrow-spacing": "error",
+        "space-infix-ops": "error",
         "max-len": [
             2,
             100,

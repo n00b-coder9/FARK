@@ -4,8 +4,8 @@ module.exports = buildSchema(`
     type Url{
         _id : ID!
         ownerid : ID!
-        longurl : String!
-        shorturl : String!
+        longUrl : String!
+        shortUrl : String!
         expirydate : String!
         createdAt : String!
         readwriteaccess : Access!
@@ -41,9 +41,6 @@ module.exports = buildSchema(`
         email : String!
         password : String!
     }
-    input PostInputData{
-        longurl : String!
-    }
     type PostData{
         urls : [Url!]!
         totalurls : Int!
@@ -52,9 +49,14 @@ module.exports = buildSchema(`
         login(email : String! , password : String!) : AuthToken!
         urls : PostData!
     }
+    type shortUrl{
+        _id : ID!,
+        longUrl : String!,
+        shortUrl : String!
+    }
     type RootMutation{
         signUp(UserInput : UserInputData) : GenericMessage!
-        createUrl(postInput : PostInputData) : Url!
+        shortenUrl(longUrl : String! , userId : String) : shortUrl!
     }
     schema {
         query : RootQuery

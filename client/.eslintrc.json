@@ -24,6 +24,7 @@
     ],
     "rules": {
         "linebreak-style": "off",
+        "space-infix-ops": "error",
         "max-len": [
             2,
             100,

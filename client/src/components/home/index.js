@@ -13,6 +13,8 @@ import { validateUrl } from '../../utils/validator';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsSnackbarOpen } from '../../redux/slices/snackbar';
 import { useHistory, useLocation } from 'react-router-dom';
+import shortenUrlQuery from '../../graphQl/queries/shortenUrlQuery';
+import axios from '../../utils/axios';
 // define styles for this component
 const useStyles = makeStyles((theme)=>({
   root: {
@@ -45,34 +47,35 @@ const useStyles = makeStyles((theme)=>({
 }));
 
 function Home() {
-  const [longUrl, setLongUrl]=useState('');
-  const [shortUrl, setShortUrl]=useState(localStorage.getItem('shortUrl')==null?'':
+  const [longUrl, setLongUrl] = useState('');
+  const [shortUrl, setShortUrl] = useState(localStorage.getItem('shortUrl') == null ? '' :
   localStorage.getItem('shortUrl'));
-  const [isFormEnabled, setFormEnabled]=useState(true);
-  const [longUrlHasError, setLongUrlHasError]=useState(false);
-  const [longUrlErrMsg, setLongUrlErrMsg]=useState('');
-  const [isShortUrlGen, setIsShortUrlGen]=useState(
-      localStorage.getItem('isShortUrlGen')==='true');
-  const [urlTitle, setUrlTitle]=useState(localStorage.getItem('urlTitle')===null?'':
+  const [isFormEnabled, setFormEnabled] = useState(true);
+  const [longUrlHasError, setLongUrlHasError] = useState(false);
+  const [longUrlErrMsg, setLongUrlErrMsg] = useState('');
+  const [isShortUrlGen, setIsShortUrlGen] = useState(
+      localStorage.getItem('isShortUrlGen') === 'true');
+  const [urlTitle, setUrlTitle] = useState(localStorage.getItem('urlTitle') === null ? '' :
   localStorage.getItem('urlTitle'));
-  const [urlDescription, setUrlDescription]= useState(localStorage.getItem('urlDescription')===
-  null?'':localStorage.getItem('urlDescription'));
-  const [isDetailsFormEnabled, setDetailsFormEnabled]=useState(true);
-  const classes=useStyles();
-  const location=useLocation();
-  const theme=useTheme();
-  const dispatch=useDispatch();
-  const history =useHistory();
-  const isLoggedIn=useSelector((state)=>state.auth.isLoggedIn);
+  const [urlDescription, setUrlDescription] = useState(localStorage.getItem('urlDescription') ===
+  null ? '' : localStorage.getItem('urlDescription'));
+  const [isDetailsFormEnabled, setDetailsFormEnabled] = useState(true);
+  const classes = useStyles();
+  const location = useLocation();
+  const theme = useTheme();
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const isLoggedIn = useSelector((state)=>state.auth.isLoggedIn);
+  const userId = useSelector((state)=>state.auth.user);
   const mediaMinSm = useMediaQuery(theme.breakpoints.up('sm'));
-  const handleLongUrlform=async ()=>{
+  const handleLongUrlform = async ()=>{
     if (!isFormEnabled) {
       return;
     }
     setFormEnabled(false);
     setLongUrlHasError(false);
     // check if url is valid
-    const UrlValidity =validateUrl(longUrl);
+    const UrlValidity = validateUrl(longUrl);
     const errorFree = UrlValidity.isValid;
 
     if (!errorFree) {
@@ -83,17 +86,30 @@ function Home() {
     }
     // if error free then try to generate shortUrl
     try {
-      setShortUrl('abcdegh');
+      const graphqlQuery = shortenUrlQuery({ longUrl, userId: userId === null ? 'guest' : userId });
+      const response = await axios().post('/', graphqlQuery);
+      setShortUrl(response.data.data.shortenUrl.shortUrl);
       setFormEnabled(true);
       return setIsShortUrlGen(true);
     } catch (err) {
       // allow user to resubmit the form
-      setFormEnabled(true);
       // handle the various errors
+
+      const error = err.response.data.errors[0];
+      if (error.code === 422) {
+        dispatch(setIsSnackbarOpen({
+          isOpen: true, message: error.message, severity: 'error',
+        }));
+      } else {
+        dispatch(setIsSnackbarOpen({
+          isOpen: true, message: 'An unknown error occurred', severity: 'error',
+        }));
+      }
+      setFormEnabled(true);
     }
   };
   // save the title and description of the url if entered
-  const handleUrlDetails =async ()=>{
+  const handleUrlDetails = async ()=> {
     if (!isDetailsFormEnabled) {
       return;
     }
@@ -112,7 +128,7 @@ function Home() {
   // the base url
   const baseUrl = 'fark.herokuapp.com';
   // content to be rendered before short url is generated
-  let content=(
+  let content = (
     <div style={{
       flexDirection: 'column',
       padding: mediaMinSm ? '24px' : '4px',
@@ -158,7 +174,7 @@ function Home() {
     </div>);
   // if shorturl has been generated render this instead
   if (isShortUrlGen) {
-    content=(
+    content = (
       <div style={{
         flexDirection: 'column',
         padding: mediaMinSm ? '24px' : '4px',

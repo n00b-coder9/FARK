@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core';
 import Navigation from './components/Navigation';
 import Auth from './components/auth';
 import Snackbar from './components/common/Snackbar';
-import Home from './components/home/Home';
+import Home from './components/home';
 import { setIsSnackbarOpen } from './redux/slices/snackbar';
 import { fetchIsDrawerOpen } from './redux/slices/drawer';
 
@@ -43,6 +43,7 @@ function App() {
     dispatch(fetchIsDrawerOpen());
     dispatch(fetchLogin());
   }, [dispatch]);
+
   return (
     <div className={classes.root}>
       <Navigation />
@@ -57,7 +58,7 @@ function App() {
           <Route path='/auth'>
             <Auth/>
           </Route>
-          <Route path='/'>
+          <Route exact path='/'>
             <Home />
           </Route>
         </Switch>

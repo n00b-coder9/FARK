@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Route, withRouter, Switch } from 'react-router-dom';
+import { Route, withRouter, Switch, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
 
@@ -9,9 +9,9 @@ import Snackbar from './components/common/Snackbar';
 import Home from './components/home';
 import { setIsSnackbarOpen } from './redux/slices/snackbar';
 import { fetchIsDrawerOpen } from './redux/slices/drawer';
+import { fetchLogin } from './redux/slices/auth';
 
 import './App.css';
-import { fetchLogin } from './redux/slices/auth';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,7 +27,9 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
   },
   content: {
-    flexGrow: 1,
+    display: 'flex',
+    flex: '1 0 auto',
+    flexDirection: 'column',
     padding: theme.spacing(3),
   },
 }));
@@ -54,12 +56,15 @@ function App() {
 
         {/* App content starts here */}
         <Switch>
+          <Route exact path='/'>
+            <Redirect to='/home'/>
+          </Route>
+          <Route exact path='/home'>
+            <Home />
+          </Route>
           {/* Auth related routes */}
           <Route path='/auth'>
             <Auth/>
-          </Route>
-          <Route exact path='/'>
-            <Home />
           </Route>
         </Switch>
       </main>

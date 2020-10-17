@@ -7,17 +7,21 @@
  * Usage:
  * import axios from 'path/to/this/file/axios.js';
  *
- * axios().post(...);
- * axios().get(...);
+ * All the functions/arguments etc presetn in original axios:
+ * axios.post(...);
+ * axios.get(...);
  *
- * Note the `()` after `axios`
+ * And some utilities: get/set auth token, get config of set to axios
+ * axios.setAuthToken(jwt)
+ * jwt = axios.getAuthToken()
+ * axiosConfig = axios.getConfig()
  */
 
 import ax from 'axios';
 
 let axios;
-// Options for axios
-const options = {
+// Config for axios
+const config = {
   baseURL: `${process.env.NODE_ENV === 'production' ?
         'https://fark.herokuapp.com' :
         'http://localhost:8080'
@@ -27,16 +31,20 @@ const options = {
   },
 };
 
-axios = ax.create(options);
+axios = ax.create(config);
 
 // Changing auth header
 // Immediately configure axios for next request
 export const setAuthToken = (token) => {
-  options.headers['Authorization'] = token;
-  axios = ax.create(options);
+  config.headers['Authorization'] = token;
+  axios = Object.freeze(ax.create(config));
 };
 
 // Get auth header
-export const getAuthToken = () => options.headers['Authorization'];
+export const getAuthToken = () => config.headers['Authorization'];
 
-export default () => Object.freeze(axios);
+// Get config
+export const getConfig = () => Object.freeze(config);
+
+export default
+{ ...axios, getConfig };

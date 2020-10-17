@@ -61,7 +61,7 @@ function Auth() {
         <div className={classes.root}>
           {/* Login button */}
           <Link
-            to={{ pathname: '/auth/login', state: { from: prevPath } }}
+            to={{ pathname: '/auth/login', state: { ...location.state, from: prevPath } }}
           >
             <Button
               className={classes.authButton}
@@ -75,7 +75,7 @@ function Auth() {
 
           {/* Register button */}
           <Link
-            to={{ pathname: '/auth/register', state: { from: prevPath } }}
+            to={{ pathname: '/auth/register', state: { ...location.state, from: prevPath } }}
           >
             <Button
               className={classes.authButton}

@@ -104,14 +104,14 @@ function Register() {
 
     // No error was found, try creating the user
     try {
-      const response = await axios().post('/', signupQuery({ name, email, password }));
+      const response = await axios.post('/', signupQuery({ name, email, password }));
       dispatch(setIsSnackbarOpen({
         isOpen: true, message: response.data.data.signUp.message, severity: 'success',
       }));
 
       history.replace({
         pathname: '/auth/login',
-        state: { from: prevPath },
+        state: { ...location.state, from: prevPath },
       });
     } catch (err) {
       // Allow user to submit the form again
@@ -159,18 +159,30 @@ function Register() {
 
   return (
     <div className={classes.root}>
-      {!isFormEnabled &&
-        <LinearProgress variant="query" style={{ width: mediaMinSm ? '400px' : '100%' }} />
-      }
-      <Card
-        style={{
-          padding: mediaMinSm ? '24px' : '4px',
-          paddingLeft: mediaMinSm ? '32px' : '6px',
-          paddingRight: mediaMinSm ? '32px' : '6px',
-          width: mediaMinSm ? '400px' : '100%',
-        }}>
-        <CardHeader title="Register"/>
+      <Card>
+        <CardHeader title="Register"
+          style={{
+            backgroundColor: 'black', color: 'white',
+            padding: mediaMinSm ? '24px' : '4px',
+            paddingLeft: mediaMinSm ? '32px' : '6px',
+            paddingRight: mediaMinSm ? '32px' : '6px',
+            width: mediaMinSm ? '400px' : '100%',
+          }} />
+        {/* Only show progress bar when form is disabled */}
+        <LinearProgress
+          variant="query"
+          style={{
+            width: mediaMinSm ? '400px' : '100%',
+            visibility: isFormEnabled ? 'hidden' : 'visible',
+          }}
+        />
         <form noValidate
+          style={{
+            padding: mediaMinSm ? '24px' : '4px',
+            paddingLeft: mediaMinSm ? '32px' : '6px',
+            paddingRight: mediaMinSm ? '32px' : '6px',
+            width: mediaMinSm ? '400px' : '100%',
+          }}
           onSubmit={(e) => {
             e.preventDefault();
             handleRegistrationForm(e);

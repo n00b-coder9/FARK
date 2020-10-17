@@ -16,7 +16,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import shortenUrlQuery from '../../graphQl/queries/shortenUrlQuery';
 import axios from '../../utils/axios';
 // define styles for this component
-const useStyles = makeStyles((theme)=>({
+const useStyles = makeStyles((theme) => ({
   root: {
     'display': 'flex',
     'flexDirection': 'column',
@@ -65,10 +65,10 @@ function Home() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const history = useHistory();
-  const isLoggedIn = useSelector((state)=>state.auth.isLoggedIn);
-  const userId = useSelector((state)=>state.auth.user);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const userId = useSelector((state) => state.auth.user);
   const mediaMinSm = useMediaQuery(theme.breakpoints.up('sm'));
-  const handleLongUrlform = async ()=>{
+  const handleLongUrlform = async () => {
     if (!isFormEnabled) {
       return;
     }
@@ -109,7 +109,7 @@ function Home() {
     }
   };
   // save the title and description of the url if entered
-  const handleUrlDetails = async ()=> {
+  const handleUrlDetails = async () => {
     if (!isDetailsFormEnabled) {
       return;
     }
@@ -136,7 +136,7 @@ function Home() {
       paddingRight: mediaMinSm ? '32px' : '6px',
     }}>
       <form noValidate
-        onSubmit={(e)=>{
+        onSubmit={(e) => {
           e.preventDefault();
           handleLongUrlform();
         }}>
@@ -155,7 +155,7 @@ function Home() {
           value={longUrl}
           label="PASTE YOUR LONG URL HERE"
           placeholder="something like www.google.com"
-          onChange={(e)=>{
+          onChange={(e) => {
             setLongUrl(e.target.value);
             setLongUrlHasError(false);
             setLongUrlErrMsg('');
@@ -224,7 +224,7 @@ function Home() {
           justifyContent: 'center',
         }}>
           {/* form to save additional information of Url*/}
-          <form noValidate onSubmit={(e)=>{
+          <form noValidate onSubmit={(e) => {
             e.preventDefault();
             handleUrlDetails();
           }}>
@@ -232,7 +232,7 @@ function Home() {
               title="Title"
               label="Title"
               value={urlTitle}
-              onChange={(e)=>{
+              onChange={(e) => {
                 setUrlTitle(e.target.value);
               }}
               multiline="true"
@@ -243,7 +243,7 @@ function Home() {
               title="Description"
               label="Description"
               value={urlDescription}
-              onChange={(e)=>{
+              onChange={(e) => {
                 setUrlDescription(e.target.value);
               }}
               multiline="true"

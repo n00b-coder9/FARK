@@ -3,7 +3,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import {
   TextField,
   Card,
-  CardContent,
   CardHeader,
   CardActions,
   Button,
@@ -143,66 +142,76 @@ function Login() {
 
   return (
     <div className={classes.root}>
-      {!isFormEnabled &&
-        <LinearProgress variant="query" style={{ width: mediaMinSm ? '320px' : '100%' }} />
-      }
       <Card
+      >
+        <CardHeader title="Login"
+          style={{
+            backgroundColor: 'black', color: 'white',
+            padding: mediaMinSm ? '24px' : '4px',
+            paddingLeft: mediaMinSm ? '32px' : '6px',
+            paddingRight: mediaMinSm ? '32px' : '6px',
+            width: mediaMinSm ? '400px' : '100%',
+          }} />
+        {/* Only show progress bar when form is disabled */}
+        <LinearProgress
+          variant="query"
+          style={{
+            width: mediaMinSm ? '400px' : '100%',
+            visibility: isFormEnabled ? 'hidden' : 'visible',
+          }}
+        />
+        {/* Login form */}
+        <form noValidate onSubmit={(e) => {
+          e.preventDefault();
+          handleLoginForm();
+        }}
         style={{
           padding: mediaMinSm ? '24px' : '4px',
           paddingLeft: mediaMinSm ? '32px' : '6px',
           paddingRight: mediaMinSm ? '32px' : '6px',
-          width: mediaMinSm ? '320px' : '100%',
-        }}
-      >
-        <CardHeader title="Login" />
-        <CardContent>
-          {/* Login form */}
-          <form noValidate onSubmit={(e) => {
-            e.preventDefault();
-            handleLoginForm();
-          }}>
-            {/* Email */}
-            <TextField
-              error={emailHasError}
-              helperText={emailErrMsg}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setEmailHasError(false);
-                setEmailErrMsg('');
-              }}
-              value={email}
-              label="Email"
-              placeholder="Enter your email"
-            />
-            {/* Password */}
-            <TextField
-              error={passwordHasError}
-              helperText={passwordErrMsg}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setPasswordHasError(false);
-                setPasswordErrMsg('');
-              }}
-              value={password}
-              label="Password"
-              type="password"
-              placeholder="Enter your password"
-            />
+          width: mediaMinSm ? '400px' : '100%',
+        }}>
+          {/* Email */}
+          <TextField
+            error={emailHasError}
+            helperText={emailErrMsg}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setEmailHasError(false);
+              setEmailErrMsg('');
+            }}
+            value={email}
+            label="Email"
+            placeholder="Enter your email"
+          />
+          {/* Password */}
+          <TextField
+            error={passwordHasError}
+            helperText={passwordErrMsg}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setPasswordHasError(false);
+              setPasswordErrMsg('');
+            }}
+            value={password}
+            label="Password"
+            type="password"
+            placeholder="Enter your password"
+          />
 
-            <CardActions>
-              {/* Login button */}
-              <Button
-                disabled={!isFormEnabled}
-                type="submit"
-                color="primary"
-                variant="contained"
-                style={{ marginLeft: 'auto' }}
-              >
+          <CardActions>
+            {/* Login button */}
+            <Button
+              disabled={!isFormEnabled}
+              type="submit"
+              color="primary"
+              variant="contained"
+              style={{ marginLeft: 'auto' }}
+            >
                 Login
-              </Button>
-            </CardActions>
-          </form>
-        </CardContent>
+            </Button>
+          </CardActions>
+        </form>
       </Card>
     </div>
   );

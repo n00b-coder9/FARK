@@ -104,7 +104,7 @@ function Home() {
       // setLongUrlHasError(true);
       setLongUrlErrMsg(urlValidity.message);
       // if url is invalid ask the user to resubmit the form
-      setDetailsFormEnabled(false);
+      setDetailsFormEnabled(true);
       return setFormEnabled(true);
     }
 
@@ -119,7 +119,7 @@ function Home() {
       setShortUrl(response.data.data.shortenUrl.shortUrl);
       setQueryLongUrl(response.data.data.shortenUrl.longUrl);
       setFormEnabled(true);
-      setDetailsFormEnabled(false);
+      setDetailsFormEnabled(true);
       return setIsShortUrlGen(true);
     } catch (err) {
       // allow user to resubmit the form
@@ -135,7 +135,7 @@ function Home() {
         }));
       }
       setFormEnabled(true);
-      setDetailsFormEnabled(false);
+      setDetailsFormEnabled(true);
     }
   };
 
@@ -146,9 +146,9 @@ function Home() {
     }
     setDetailsFormEnabled(false);
     if (isLoggedIn) {
-      /* TODO: if user is logged in then allow him to add title/description */
+      /* TODO: User is logged in, editing url details */
     } else {
-      /* if user is not logged in then redirect him to the auth page*/
+      /* User is not logged in, redirect to the auth page*/
       history.push({
         pathname: '/auth', state: {
           from: location,
@@ -274,7 +274,7 @@ function Home() {
           onChange={(e) => {
             setUrlDescription(e.target.value);
           }}
-          multiline="true"
+          multiline={true}
           placeholder="Url Description"
         />
         <div style={{ display: 'flex' }}>

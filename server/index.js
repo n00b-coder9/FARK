@@ -13,7 +13,6 @@ const app = express();
 const BASE_URL = '/graphql';
 const PORT = process.env.PORT || 8080;
 const MONGODB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017/fark';
-
 // Parse the json body
 app.use(express.json());
 // Parse url encoded form data

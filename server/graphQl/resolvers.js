@@ -1,8 +1,9 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
+const urlShortener = require('../utils/urlShortener');
 const validator = require('../validator');
 const User = require('../models/User');
+const Url = require('../models/Url');
 
 // Sign in resolver
 const signUp = async ({ UserInput }) => {
@@ -76,7 +77,42 @@ const login = async ({ email, password }) => {
   );
   return { token };
 };
+// urlshortening resolver
+const shortenUrl = async ({ userId, longUrl }) => {
+  // validate longurl
+  const errors = [];
+  if (!validator.isUrlValid(longUrl)) {
+    errors.push({ 'key': 'url', 'message': 'Please Enter a valid Url!' });
+  }
+  // if url is invalid notify the user with an appropriate message
+  if (errors.length > 0) {
+    const error = new Error('Invalid Input');
+    error.code = 422;
+    error.data = errors;
+    throw error;
+  }
 
+  // check if url already exists for the user in the db
+  const existingUrl = await Url.findOne({ longUrl: longUrl });
+  if (userId === 'guest') {
+    userId = process.env.GUEST_USER_ID;
+  }
+  if (existingUrl !== null) {
+    return { longUrl: longUrl,
+      shortUrl: existingUrl.shortUrl,
+      owner: userId };
+  }
+
+  // if url doesnt exist then create a new short url
+  const shortUrl = await urlShortener(longUrl);
+  const url = new Url({
+    longUrl: longUrl,
+    shortUrl: shortUrl,
+    owner: userId,
+  });
+  await url.save();
+  return url;
+};
 module.exports = {
-  signUp, login,
+  signUp, login, shortenUrl,
 };

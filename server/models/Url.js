@@ -4,11 +4,11 @@ const { Schema } = mongoose;
 
 const urlSchema = new Schema(
     {
-      longurl: {
+      longUrl: {
         type: String,
         required: true,
       },
-      shorturl: {
+      shortUrl: {
         type: String,
         required: true,
       },

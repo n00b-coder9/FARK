@@ -18,11 +18,13 @@ export const setLogin = createAsyncThunk(LOGIN,
 
 export const fetchLogin = createAsyncThunk(FETCH_LOGIN,
     async () => {
-      const authToken = localStorage.getItem('authToken');
+      const authTokenFromLocalStorage = localStorage.getItem('authToken');
+      const authToken = authTokenFromLocalStorage !== 'null' ? authTokenFromLocalStorage : null;
+      const isLoggedIn = authToken !== null;
       return {
-        isLoggedIn: authToken !== 'null',
+        isLoggedIn,
         authToken,
-        user: authToken !== 'null' ? jwtDecode(authToken) : null,
+        user: isLoggedIn ? jwtDecode(authToken) : null,
       };
     });
 

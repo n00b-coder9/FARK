@@ -104,7 +104,7 @@ function Register() {
 
     // No error was found, try creating the user
     try {
-      const response = await axios().post('/', signupQuery({ name, email, password }));
+      const response = await axios.post('/', signupQuery({ name, email, password }));
       dispatch(setIsSnackbarOpen({
         isOpen: true, message: response.data.data.signUp.message, severity: 'success',
       }));

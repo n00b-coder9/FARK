@@ -20,6 +20,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import LockIcon from '@material-ui/icons/Lock';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { setIsDrawerOpen } from '../redux/slices/drawer';
 
@@ -62,9 +63,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'none',
   },
   drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
+    display: 'flex',
+    flexDirection: 'column',
   },
   drawerOpen: {
     width: drawerWidth,
@@ -72,6 +72,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
+    overflowX: 'hidden',
   },
   drawerClose: {
     transition: theme.transitions.create('width', {
@@ -109,14 +110,17 @@ function Navigation() {
 
   // List of options in the drawer
   const list = [
-    { type: 'entry', title: 'Home', to: '/', icon: <HomeIcon /> },
+    { type: 'entry', title: 'Home', to: '/home', icon: <HomeIcon /> },
     { type: 'entry', title: 'Dashboard', to: '/dashboard', icon: <DashboardIcon /> },
-    { type: 'divider' },
+  ];
+  // List of options in the drawer which will be shown at bottom
+  const listBottom = [
     {
       type: 'entry',
       title: `${isLoggedIn ? 'Logout' : 'Login'}`,
       to: `${isLoggedIn ? '/auth/logout' : '/auth'}`,
-      icon: <LockIcon />,
+      icon: isLoggedIn ? <LockIcon /> : <LockOpenIcon/>,
+      color: isLoggedIn ? 'red' : 'green',
     },
   ];
 
@@ -165,18 +169,9 @@ function Navigation() {
         }}
       >
         <div className={classes.toolbar} />
-        {/* Toggle drawer open */}
-        <div style={
-          { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '4px' }
-        }>
-          <IconButton onClick={toggleDrawer(!isDrawerOpen)}>
-            {isDrawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </div>
-        <Divider />
 
         {/* List all the options to be shown in the drawer */}
-        <List component="nav" style={{ width: '100%' }}>
+        <List component="nav" style={{ width: '100%', flexGrow: 1 }}>
           {list.map((item, pos) => {
             // Render divider
             if (item.type === 'divider') {
@@ -191,13 +186,50 @@ function Navigation() {
               to={{ pathname: item.to, state: { from: location.pathname } }}
               className={classes.linkDefault}
             >
-              <ListItem button>
-                <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItem button selected={location.pathname.startsWith(item.to)}>
+                <ListItemIcon style={{ color: item.color || 'black' }}>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.title} />
               </ListItem>
             </Link>;
           })}
         </List>
+
+        <Divider/>
+        {/* List all the options to be shown to the drawer's bottom */}
+        <List component="nav" style={{ width: '100%' }}>
+          {listBottom.map((item, pos) => {
+            // Render divider
+            if (item.type === 'divider') {
+              return (
+                <Divider key={pos} />
+              );
+            };
+
+            // Render link
+            return <Link
+              key={pos}
+              to={{ pathname: item.to, state: { from: location.pathname } }}
+              className={classes.linkDefault}
+            >
+              <ListItem
+                button
+                selected={location.pathname.startsWith(item.to)}>
+                <ListItemIcon style={{ color: item.color || 'black' }}>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.title} />
+              </ListItem>
+            </Link>;
+          })}
+        </List>
+
+        <Divider />
+        {/* Toggle drawer open */}
+        <div style={
+          { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '4px' }
+        }>
+          <IconButton onClick={toggleDrawer(!isDrawerOpen)}>
+            {isDrawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
+        </div>
       </Drawer>
     </div>
   );

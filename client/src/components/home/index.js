@@ -87,7 +87,7 @@ function Home() {
     // if error free then try to generate shortUrl
     try {
       const graphqlQuery = shortenUrlQuery({ longUrl, userId: userId === null ? 'guest' : userId });
-      const response = await axios().post('/', graphqlQuery);
+      const response = await axios.post('/', graphqlQuery);
       setShortUrl(response.data.data.shortenUrl.shortUrl);
       setFormEnabled(true);
       return setIsShortUrlGen(true);
@@ -115,9 +115,9 @@ function Home() {
     }
     setDetailsFormEnabled(false);
     if (isLoggedIn) {
-      {/* if user is logged in then allow him to add title/description */}
+      /* TODO: if user is logged in then allow him to add title/description */
     } else {
-      {/* if user is not logged in then redirect him to the auth page*/}
+      /* if user is not logged in then redirect him to the auth page*/
       localStorage.setItem('isShortUrlGen', isShortUrlGen);
       localStorage.setItem('urlTitle', urlTitle);
       localStorage.setItem('urlDescription', urlDescription);
@@ -126,7 +126,7 @@ function Home() {
     }
   };
   // the base url
-  const baseUrl = 'fark.herokuapp.com';
+  const baseUrl = axios.getConfig().baseURL;
   // content to be rendered before short url is generated
   let content = (
     <div style={{

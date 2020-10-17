@@ -98,7 +98,7 @@ function Login() {
     // No error was found, try creating the user
     try {
       const graphqlQuery = loginQuery({ email, password });
-      const response = await axios().post('/', graphqlQuery);
+      const response = await axios.post('/', graphqlQuery);
 
       // User login successful, update the ui and redirect to the dashboard
       dispatch(setIsSnackbarOpen({

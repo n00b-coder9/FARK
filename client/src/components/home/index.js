@@ -15,6 +15,7 @@ import { setIsSnackbarOpen } from '../../redux/slices/snackbar';
 import { useHistory, useLocation } from 'react-router-dom';
 import shortenUrlQuery from '../../graphQl/queries/shortenUrlQuery';
 import axios from '../../utils/axios';
+
 // define styles for this component
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,27 +48,36 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Home() {
-  const [longUrl, setLongUrl] = useState('');
-  const [shortUrl, setShortUrl] = useState(localStorage.getItem('shortUrl') == null ? '' :
-  localStorage.getItem('shortUrl'));
-  const [isFormEnabled, setFormEnabled] = useState(true);
-  const [longUrlHasError, setLongUrlHasError] = useState(false);
-  const [longUrlErrMsg, setLongUrlErrMsg] = useState('');
-  const [isShortUrlGen, setIsShortUrlGen] = useState(
-      localStorage.getItem('isShortUrlGen') === 'true');
-  const [urlTitle, setUrlTitle] = useState(localStorage.getItem('urlTitle') === null ? '' :
-  localStorage.getItem('urlTitle'));
-  const [urlDescription, setUrlDescription] = useState(localStorage.getItem('urlDescription') ===
-  null ? '' : localStorage.getItem('urlDescription'));
-  const [isDetailsFormEnabled, setDetailsFormEnabled] = useState(true);
   const classes = useStyles();
   const location = useLocation();
   const theme = useTheme();
   const dispatch = useDispatch();
   const history = useHistory();
+
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const userId = useSelector((state) => state.auth.user);
+  const userId = useSelector((state) => state.auth.user ? state.auth.user.userId : null);
+
+  // Check if we have data from location's state.
+  // This will be present if a non-logged in user wants to save the url
+  const isShortenAndAuth = location.state && location.state.shortenDataAfterAuth;
+  const shortenDataAfterAuth = isShortenAndAuth ? location.state.shortenDataAfterAuth : null;
+
+  const [longUrl, setLongUrl] = useState('');
+  const [shortUrl, setShortUrl] = useState(isShortenAndAuth ? shortenDataAfterAuth.shortUrl : '');
+  const [isFormEnabled, setFormEnabled] = useState(true);
+  const [longUrlHasError, setLongUrlHasError] = useState(false);
+  const [longUrlErrMsg, setLongUrlErrMsg] = useState('');
+  const [isShortUrlGen, setIsShortUrlGen] = useState(
+    isShortenAndAuth ? shortenDataAfterAuth.isShortUrlGen : false,
+  );
+  const [urlTitle, setUrlTitle] = useState(isShortenAndAuth ? shortenDataAfterAuth.urlTitle : '');
+  const [urlDescription, setUrlDescription] = useState(
+    isShortenAndAuth ? shortenDataAfterAuth.urlDescription : '',
+  );
+  const [isDetailsFormEnabled, setDetailsFormEnabled] = useState(true);
+
   const mediaMinSm = useMediaQuery(theme.breakpoints.up('sm'));
+
   const handleLongUrlform = async () => {
     if (!isFormEnabled) {
       return;
@@ -94,7 +104,6 @@ function Home() {
     } catch (err) {
       // allow user to resubmit the form
       // handle the various errors
-
       const error = err.response.data.errors[0];
       if (error.code === 422) {
         dispatch(setIsSnackbarOpen({
@@ -108,6 +117,7 @@ function Home() {
       setFormEnabled(true);
     }
   };
+
   // save the title and description of the url if entered
   const handleUrlDetails = async () => {
     if (!isDetailsFormEnabled) {
@@ -118,11 +128,14 @@ function Home() {
       /* TODO: if user is logged in then allow him to add title/description */
     } else {
       /* if user is not logged in then redirect him to the auth page*/
-      localStorage.setItem('isShortUrlGen', isShortUrlGen);
-      localStorage.setItem('urlTitle', urlTitle);
-      localStorage.setItem('urlDescription', urlDescription);
-      localStorage.setItem('shortUrl', shortUrl);
-      history.push({ pathname: '/auth', state: { from: location } });
+      history.push({
+        pathname: '/auth', state: {
+          from: location,
+          shortenDataAfterAuth: {
+            isShortUrlGen, urlTitle, urlDescription, shortUrl,
+          },
+        },
+      });
     }
   };
   // the base url
@@ -153,8 +166,8 @@ function Home() {
           error={longUrlHasError}
           helperText={longUrlErrMsg}
           value={longUrl}
-          label="PASTE YOUR LONG URL HERE"
-          placeholder="something like www.google.com"
+          label="Long url"
+          placeholder="www.example.com/a/very/long/url?query=a+very+long+query"
           onChange={(e) => {
             setLongUrl(e.target.value);
             setLongUrlHasError(false);
@@ -172,6 +185,7 @@ function Home() {
         </CardActions>
       </form>
     </div>);
+
   // if shorturl has been generated render this instead
   if (isShortUrlGen) {
     content = (
@@ -255,7 +269,6 @@ function Home() {
               variant="contained"
               color="primary"
               style={{
-                width: '30%',
                 marginLeft: 'auto',
               }}>
             Add
@@ -264,17 +277,23 @@ function Home() {
         </div>
       </div>);
   }
+
   return (
     <div className={classes.root}>
-      {!isFormEnabled &&
-        <LinearProgress variant="query" style={{ width: mediaMinSm ? '400px' : '100%' }} />
-      }
       <Card style={{
         width: mediaMinSm ? '400px' : '100%',
       }}>
         <CardHeader
           className={classes.cardHeader}
           title="CREATE LINK"
+        />
+        {/* Only show progress bar when form is disabled */}
+        <LinearProgress
+          variant="query"
+          style={{
+            width: mediaMinSm ? '400px' : '100%',
+            visibility: isFormEnabled ? 'hidden' : 'visible',
+          }}
         />
         {content}
       </Card>

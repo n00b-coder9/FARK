@@ -111,7 +111,7 @@ function Register() {
 
       history.replace({
         pathname: '/auth/login',
-        state: { from: prevPath },
+        state: { ...location.state, from: prevPath },
       });
     } catch (err) {
       // Allow user to submit the form again

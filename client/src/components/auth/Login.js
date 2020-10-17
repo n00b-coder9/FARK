@@ -109,7 +109,7 @@ function Login() {
       const authToken = response.data.data.login.token;
       dispatch(setLogin({ isLoggedIn: true, authToken }));
 
-      history.replace(prevPath);
+      history.replace(prevPath, location.state);
     } catch (err) {
       // Allow user to submit the form again
       setFormEnabled(true);

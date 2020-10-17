@@ -77,12 +77,13 @@ const login = async ({ email, password }) => {
   );
   return { token };
 };
-// urlshortening resolver
+
+// URL shortening resolver
 const shortenUrl = async ({ userId, longUrl }) => {
   // validate longurl
   const errors = [];
   if (!validator.isUrlValid(longUrl)) {
-    errors.push({ 'key': 'url', 'message': 'Please Enter a valid Url!' });
+    errors.push({ 'key': 'url', 'message': 'Please enter a valid url!' });
   }
   // if url is invalid notify the user with an appropriate message
   if (errors.length > 0) {
@@ -98,9 +99,11 @@ const shortenUrl = async ({ userId, longUrl }) => {
     userId = process.env.GUEST_USER_ID;
   }
   if (existingUrl !== null) {
-    return { longUrl: longUrl,
+    return {
+      longUrl: longUrl,
       shortUrl: existingUrl.shortUrl,
-      owner: userId };
+      _id: userId,
+    };
   }
 
   // if url doesnt exist then create a new short url
@@ -111,7 +114,7 @@ const shortenUrl = async ({ userId, longUrl }) => {
     owner: userId,
   });
   await url.save();
-  return url;
+  return { longUrl, shortUrl: url.shortUrl };
 };
 module.exports = {
   signUp, login, shortenUrl,

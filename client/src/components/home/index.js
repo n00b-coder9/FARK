@@ -9,6 +9,7 @@ import {
   Button,
   InputBase,
   CardHeader,
+  Fade,
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { validateUrl } from '../../utils/validator';
@@ -76,7 +77,7 @@ function Home() {
   const [shortUrl, setShortUrl] = useState(isShortenAndAuth ? shortenDataAfterAuth.shortUrl : '');
   const [queryLongUrl, setQueryLongUrl] = useState('');
   const [isFormEnabled, setFormEnabled] = useState(true);
-  // const [longUrlHasError, setLongUrlHasError] = useState(false);
+  const [longUrlHasError, setLongUrlHasError] = useState(false);
   const [longUrlErrMsg, setLongUrlErrMsg] = useState('');
   const [isShortUrlGen, setIsShortUrlGen] = useState(
     isShortenAndAuth ? shortenDataAfterAuth.isShortUrlGen : false,
@@ -94,14 +95,14 @@ function Home() {
       return;
     }
     setFormEnabled(false);
-    // setLongUrlHasError(false);
+    setLongUrlHasError(false);
     setDetailsFormEnabled(false);
     // check if url is valid
     const urlValidity = validateUrl(longUrl);
     const errorFree = urlValidity.isValid;
 
     if (!errorFree) {
-      // setLongUrlHasError(true);
+      setLongUrlHasError(true);
       setLongUrlErrMsg(urlValidity.message);
       // if url is invalid ask the user to resubmit the form
       setDetailsFormEnabled(true);
@@ -161,9 +162,9 @@ function Home() {
   };
 
   // Long url input form
-  const longUrlInput = (
+  let form = (
     <div style={{
-      marginTop: isShortUrlGen || !isFormEnabled ? '16px' : '25vh',
+      marginTop: '10vh',
     }}>
       <Card>
         <form noValidate
@@ -181,7 +182,7 @@ function Home() {
             placeholder="www.example.com/a/very/long/url?query=a+very+long+query"
             onChange={(e) => {
               setLongUrl(e.target.value);
-              // setLongUrlHasError(false);
+              setLongUrlHasError(false);
               setLongUrlErrMsg('');
             }} />
           <CardActions className={classes.primaryBgColor}>
@@ -197,108 +198,112 @@ function Home() {
         </form>
       </Card>
       {/* Error message */}
-      <div style={{ color: 'red', height: '1em', margin: '8px' }}>{longUrlErrMsg}</div>
+      <Fade in={longUrlHasError}>
+        <div style={{ color: 'red', height: '1em', margin: '8px' }}>{longUrlErrMsg}</div>
+      </Fade>
     </div>
   );
 
   // If short url has been generated render the final form
-  const finalForm = isShortUrlGen ?
-    <Card>
-      <CardHeader title="Short url"
-        style={{
-          backgroundColor: 'black', color: 'white',
-          width: '100%',
-        }} />
-      {/* Form to save additional information of Url*/}
-      <form
-        noValidate
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleUrlDetails();
-        }}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          paddingTop: '4px',
-          paddingBottom: mediaMinSm ? '16px' : '6px',
-          paddingLeft: mediaMinSm ? '32px' : '6px',
-          paddingRight: mediaMinSm ? '32px' : '6px',
-          width: '100%',
-        }}
-      >
-        {/* Title */}
-        <TextField
-          title="Title"
-          label="Title"
-          value={urlTitle}
-          onChange={(e) => {
-            setUrlTitle(e.target.value);
+  if (isShortUrlGen) {
+    form = (
+      <Card style={{ marginTop: '10vh' }}>
+        <CardHeader title="Short url"
+          style={{
+            backgroundColor: 'black', color: 'white',
+            width: '100%',
+          }} />
+        {/* Form to save additional information of Url*/}
+        <form
+          noValidate
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleUrlDetails();
           }}
-          placeholder="Title"
-        />
-        {/* Long url */}
-        <TextField
-          title="Long url"
-          label="Long url"
-          placeholder="Long url"
-          value={queryLongUrl}
-          disabled
-        />
-        {/* Short url */}
-        <div style={{ display: 'flex' }}>
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            paddingTop: '4px',
+            paddingBottom: mediaMinSm ? '16px' : '6px',
+            paddingLeft: mediaMinSm ? '32px' : '6px',
+            paddingRight: mediaMinSm ? '32px' : '6px',
+            width: '100%',
+          }}
+        >
+          {/* Title */}
           <TextField
-            title="Short url"
-            label="Short url"
-            placeholder="Short url"
-            value={shortUrl}
-            style={{ flexGrow: 1 }}
+            title="Title"
+            label="Title"
+            value={urlTitle}
+            onChange={(e) => {
+              setUrlTitle(e.target.value);
+            }}
+            placeholder="Title"
           />
-          {/* Button to copy short url */}
-          <CardActions>
-            <Button
-              onClick={() => {
-                navigator.clipboard.writeText(shortUrl);
-                dispatch(setIsSnackbarOpen({
-                  isOpen: true, message: 'Copied', severity: 'success',
-                }));
-              }}>
+          {/* Long url */}
+          <TextField
+            title="Long url"
+            label="Long url"
+            placeholder="Long url"
+            value={queryLongUrl}
+            disabled
+          />
+          {/* Short url */}
+          <div style={{ display: 'flex' }}>
+            <TextField
+              title="Short url"
+              label="Short url"
+              placeholder="Short url"
+              value={shortUrl}
+              style={{ flexGrow: 1 }}
+            />
+            {/* Button to copy short url */}
+            <CardActions>
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(shortUrl);
+                  dispatch(setIsSnackbarOpen({
+                    isOpen: true, message: 'Copied', severity: 'success',
+                  }));
+                }}>
               Copy
-            </Button>
-          </CardActions>
-        </div>
-        {/* Description */}
-        <TextField
-          title="Description"
-          label="Description"
-          value={urlDescription}
-          onChange={(e) => {
-            setUrlDescription(e.target.value);
-          }}
-          multiline={true}
-          placeholder="Url Description"
-        />
-        <div style={{ display: 'flex' }}>
-          {/* Time of creation */}
-          <span
-            style={{ flexGrow: 1, color: 'gray', margin: '8px', marginTop: '16px' }}>
-            <em>{new Date().toDateString()}</em>
-          </span>
-          {/* Submit update */}
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-          >
+              </Button>
+            </CardActions>
+          </div>
+          {/* Description */}
+          <TextField
+            title="Description"
+            label="Description"
+            value={urlDescription}
+            onChange={(e) => {
+              setUrlDescription(e.target.value);
+            }}
+            multiline={true}
+            placeholder="Url Description"
+          />
+          <div style={{ display: 'flex' }}>
+            {/* Time of creation */}
+            <span
+              style={{ flexGrow: 1, color: 'gray', margin: '8px', marginTop: '16px' }}>
+              <em>{new Date().toDateString()}</em>
+            </span>
+            {/* Submit update */}
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+            >
             Save
-          </Button>
-        </div>
-      </form>
-    </Card> :
-    <></>;
+            </Button>
+          </div>
+        </form>
+      </Card>
+    );
+  }
 
   return (
     <div className={classes.root}>
-      {longUrlInput}
+      {form}
       {/* Only show progress bar when form is disabled */}
       {!isFormEnabled &&
         // Show skeletion loading
@@ -353,7 +358,6 @@ function Home() {
           </div>
         </div>
       }
-      {finalForm}
     </div>
   );
 }

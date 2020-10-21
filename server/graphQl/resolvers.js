@@ -79,8 +79,9 @@ const login = async ({ email, password }) => {
 };
 
 // URL shortening resolver
-const shortenUrl = async ({ userId, longUrl }) => {
+const shortenUrl = async ({ longUrl }, request) => {
   // validate longurl
+  let userId = request.userId;
   const errors = [];
   if (!validator.isUrlValid(longUrl)) {
     errors.push({ 'key': 'url', 'message': 'Please enter a valid url!' });
@@ -92,17 +93,17 @@ const shortenUrl = async ({ userId, longUrl }) => {
     error.data = errors;
     throw error;
   }
-
-  // check if url already exists for the user in the db
-  const existingUrl = await Url.findOne({ longUrl: longUrl });
-  if (userId === 'guest') {
+  // If user is not logged in then assign guest userId
+  if (userId == null) {
     userId = process.env.GUEST_USER_ID;
   }
+  // check if url already exists for the user in the db
+  const existingUrl = await Url.findOne({ longUrl: longUrl, owner: userId });
+  // If exists return the same instance
   if (existingUrl !== null) {
     return {
       longUrl: longUrl,
       shortUrl: existingUrl.shortUrl,
-      _id: userId,
     };
   }
 
@@ -116,6 +117,52 @@ const shortenUrl = async ({ userId, longUrl }) => {
   await url.save();
   return { longUrl, shortUrl: url.shortUrl };
 };
+
+// Resolver to add details of url
+const addDetails = async ({ title, description, shortUrl }, request) => {
+  // Check if title and description both are empty if yes the return
+  if (title.length === 0 && description.length === 0) {
+    return {
+      message: ' ',
+    };
+  }
+  const userId = request.userId;
+  // If either of the field is non-empty , then update the information
+  /**
+   * Check if the current user is an owner of this url
+   * or he created this url when he was not logged in
+   * If yes , then update accordingly
+   * Otherwise create a new short url and then add the details
+   */
+
+  const urlInstance = await Url.find({ shortUrl: shortUrl });
+  const isUserAnOwner = urlInstance.find((url) => url.owner == userId);
+  if (isUserAnOwner) {
+    /**
+     * Current user is an owner of this short url,
+     * Update and return success message
+     */
+    await Url.findOneAndUpdate(
+        { shortUrl: shortUrl, owner: userId }, { title: title, description: description });
+    return { message: 'Success' };
+  } else {
+    // Generate a new short url private to current user
+    const longUrl = urlInstance[0].longUrl;
+    const shortenedUrl = await urlShortener(longUrl);
+    // Make a new url object including the details and save it in the db
+    const url = new Url({
+      shortUrl: shortenedUrl,
+      longUrl: longUrl,
+      owner: userId,
+      title: title,
+      description: description,
+    });
+    await url.save();
+    return {
+      message: 'Success',
+    };
+  }
+};
 module.exports = {
-  signUp, login, shortenUrl,
+  signUp, login, shortenUrl, addDetails,
 };

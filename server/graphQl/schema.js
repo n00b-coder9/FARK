@@ -56,7 +56,8 @@ module.exports = buildSchema(`
     }
     type RootMutation{
         signUp(UserInput : UserInputData) : GenericMessage!
-        shortenUrl(longUrl : String! , userId : String) : shortUrl!
+        shortenUrl(longUrl : String!) : shortUrl!
+        addDetails(title: String , description : String , shortUrl: String!) : GenericMessage! 
     }
     schema {
         query : RootQuery

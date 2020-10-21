@@ -18,6 +18,7 @@ import { setIsSnackbarOpen } from '../../redux/slices/snackbar';
 import { useHistory, useLocation } from 'react-router-dom';
 import shortenUrlQuery from '../../graphQl/queries/shortenUrlQuery';
 import axios from '../../utils/axios';
+import addDetailsQuery from '../../graphQl/queries/addDetailsQuery';
 
 // define styles for this component
 const useStyles = makeStyles((theme) => ({
@@ -87,7 +88,7 @@ function Home() {
     isShortenAndAuth ? shortenDataAfterAuth.urlDescription : '',
   );
   const [isDetailsFormEnabled, setDetailsFormEnabled] = useState(true);
-
+  const token = useSelector((state) => state.auth.authToken);
   const mediaMinSm = useMediaQuery(theme.breakpoints.up('sm'));
 
   const handleLongUrlform = async () => {
@@ -115,7 +116,11 @@ function Home() {
     // if error free then try to generate shortUrl
     try {
       const graphqlQuery = shortenUrlQuery({ longUrl, userId: userId === null ? 'guest' : userId });
-      const response = await axios.post('/', graphqlQuery);
+      const response = await axios.post('/', graphqlQuery, {
+        headers: {
+          Authorization: token,
+        },
+      });
 
       setShortUrl(response.data.data.shortenUrl.shortUrl);
       setQueryLongUrl(response.data.data.shortenUrl.longUrl);
@@ -147,7 +152,31 @@ function Home() {
     }
     setDetailsFormEnabled(false);
     if (isLoggedIn) {
-      /* TODO: User is logged in, editing url details */
+      /**
+        *  User is logged in, editing url details
+        *  try updating the url details and handle the errors*/
+      try {
+        const graphqlQuery = addDetailsQuery({
+          title: urlTitle,
+          description: urlDescription,
+          shortUrl: shortUrl,
+        });
+        const response = await axios.post('/', graphqlQuery, {
+          headers: {
+            Authorization: token,
+          },
+        });
+        const message = response.data.data.addDetails.message;
+        // If updation is successfull then inform the user using the snackbar
+        dispatch(setIsSnackbarOpen({
+          isOpen: true, message: message, severity: 'success',
+        }));
+      } catch (err) {
+        // handle the errors
+        dispatch(setIsSnackbarOpen({
+          isOpen: true, message: 'An unknown error occured ', severity: 'error',
+        }));
+      }
     } else {
       /* User is not logged in, redirect to the auth page*/
       history.push({
@@ -159,6 +188,7 @@ function Home() {
         },
       });
     }
+    return setDetailsFormEnabled(true);
   };
 
   // Long url input form

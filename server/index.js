@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const FarkGraphQLSchema = require('./graphQl/schema');
 const resolvers = require('./graphQl/resolvers');
+const auth = require('./middleware/auth');
 
 // load the environment variables from '.env' file
 dotenv.config();
@@ -28,6 +29,8 @@ app.use((req, res, next) => {
   next();
 });
 
+// Authentication middleware
+app.use(auth);
 // GraphQl setup
 app.use(
     BASE_URL,
@@ -65,3 +68,4 @@ mongoose
       console.log('Error while connecting to mongodb: ', err);
       process.exit(1);
     });
+mongoose.set('useFindAndModify', false);

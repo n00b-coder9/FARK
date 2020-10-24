@@ -12,6 +12,10 @@ const urlSchema = new Schema(
         type: String,
         required: true,
       },
+      clicks: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Click',
+      }],
       owner: {
         type: mongoose.Types.ObjectId,
         ref: 'User',

@@ -12,7 +12,7 @@ const redirect = async (req, res) => {
          */
     const urlInstance = await Url.findOne({ shortUrl: hash });
     //  url does not exist in the db
-    if (urlInstance == null) {
+    if (!urlInstance) {
       return res.sendStatus(404);
     }
 

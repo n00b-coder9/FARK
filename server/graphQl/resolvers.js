@@ -123,7 +123,7 @@ const addDetails = async ({ title, description, shortUrl }, request) => {
   // Check if title and description both are empty if yes the return
   if (title.length === 0 && description.length === 0) {
     return {
-      message: ' ',
+      message: 'Title and Details both cannot be empty.',
     };
   }
   const userId = request.userId;
@@ -135,7 +135,7 @@ const addDetails = async ({ title, description, shortUrl }, request) => {
    * Otherwise create a new short url and then add the details
    */
 
-  const urlInstance = await Url.find({ shortUrl: shortUrl });
+  const urlInstance = await Url.find({ shortUrl });
   const isUserAnOwner = urlInstance.find((url) => url.owner == userId);
   if (isUserAnOwner) {
     /**
@@ -143,8 +143,8 @@ const addDetails = async ({ title, description, shortUrl }, request) => {
      * Update and return success message
      */
     await Url.findOneAndUpdate(
-        { shortUrl: shortUrl, owner: userId }, { title: title, description: description });
-    return { message: 'Success' };
+        { shortUrl, owner: userId }, { title, description });
+    return { message: 'Details Updated successfully!' };
   } else {
     // Generate a new short url private to current user
     const longUrl = urlInstance[0].longUrl;
@@ -152,14 +152,14 @@ const addDetails = async ({ title, description, shortUrl }, request) => {
     // Make a new url object including the details and save it in the db
     const url = new Url({
       shortUrl: shortenedUrl,
-      longUrl: longUrl,
+      longUrl,
       owner: userId,
-      title: title,
-      description: description,
+      title,
+      description,
     });
     await url.save();
     return {
-      message: 'Success',
+      message: 'Details Updated successfully!',
     };
   }
 };

@@ -25,12 +25,10 @@ app.get(/^\/[a-zA-Z0-9]{4,16}$/, (req, res) => {
   return Url.findOne({ shortUrl: hash }).then((_res) => {
     if (_res == null) {
       {/* url does not exist in the db */}
-      res.status(404);
-      res.setHeader('Error');
-      return null;
+      return res.sendStatus(404);
     }
     // Regex expression to check whether long url starts with a protocol or not
-    const protocolRegex = /^(ftp: \/\/|http:\/\/|https:\/\/)/;
+    const protocolRegex = /^(ftp|http|https):\/\//;
     let longUrl = null;
     /**
      * Check if long url matches the regex
@@ -42,7 +40,7 @@ app.get(/^\/[a-zA-Z0-9]{4,16}$/, (req, res) => {
     } else {
       longUrl = 'http://' + _res.longUrl;
     }
-    res.redirect(301, longUrl);
+    res.redirect(longUrl);
     return _res;
   },
   ).then((_res) => {

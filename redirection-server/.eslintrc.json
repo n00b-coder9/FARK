@@ -1,0 +1,30 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true
+    },
+    "root": true,
+    "extends": [
+        "google"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 12
+    },
+    "rules": {
+        "linebreak-style": "off",
+        "arrow-spacing": "error",
+        "space-infix-ops": "error",
+        "max-len": [
+            2,
+            100,
+            {"ignoreRegExpLiterals": true}
+        ],
+        "require-jsdoc": "off",
+        "no-console": "error",
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ]
+    }
+}

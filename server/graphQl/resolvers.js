@@ -94,16 +94,18 @@ const shortenUrl = async ({ longUrl }, request) => {
     throw error;
   }
   // If user is not logged in then assign guest userId
-  if (userId == null) {
+  if (!userId) {
     userId = process.env.GUEST_USER_ID;
   }
   // check if url already exists for the user in the db
-  const existingUrl = await Url.findOne({ longUrl: longUrl, owner: userId });
+  const existingUrl = await Url.findOne({ longUrl, owner: userId });
   // If exists return the same instance
   if (existingUrl !== null) {
     return {
       longUrl: longUrl,
       shortUrl: existingUrl.shortUrl,
+      title: existingUrl.title,
+      description: existingUrl.description,
     };
   }
 
@@ -113,20 +115,45 @@ const shortenUrl = async ({ longUrl }, request) => {
     longUrl: longUrl,
     shortUrl: shortUrl,
     owner: userId,
+    title: '',
+    description: '',
   });
   await url.save();
-  return { longUrl, shortUrl: url.shortUrl };
+  return { longUrl, shortUrl: url.shortUrl, title: url.title, description: shortUrl.description };
 };
 
 // Resolver to add details of url
-const addDetails = async ({ title, description, shortUrl }, request) => {
-  // Check if title and description both are empty if yes the return
-  if (title.length === 0 && description.length === 0) {
-    return {
-      message: 'Title and Details both cannot be empty.',
-    };
+const addDetails = async ({ title, description, shortUrl, updatedShortUrl }, request) => {
+  /**
+   *  Check if title and description both are empty
+   * and if the short url requested by the user is same as before
+  */
+  const urlInstance = await Url.find({ shortUrl });
+  // Check if details have been updated or not
+  if (urlInstance[0].title === title &&
+    urlInstance[0].description === description &&
+    shortUrl === updatedShortUrl) {
+    const error = new Error('Update failed as values have not changed');
+    error.code = 422;
+    throw error;
   }
-  const userId = request.userId;
+  // Check if the short url is empty
+  if (updatedShortUrl.length === 0) {
+    const error = new Error('Short url cannot be empty');
+    error.code = 422;
+    throw error;
+  }
+  const { userId } = request;
+
+  if (shortUrl !== updatedShortUrl) {
+    // Check whether this short url is already assigned
+    const urlInstance = await Url.find({ shortUrl: updatedShortUrl });
+    if (urlInstance.length > 0) {
+      const error = new Error('This Url is already used');
+      error.code = 422;
+      throw error;
+    }
+  }
   // If either of the field is non-empty , then update the information
   /**
    * Check if the current user is an owner of this url
@@ -135,20 +162,24 @@ const addDetails = async ({ title, description, shortUrl }, request) => {
    * Otherwise create a new short url and then add the details
    */
 
-  const urlInstance = await Url.find({ shortUrl });
-  const isUserAnOwner = urlInstance.find((url) => url.owner == userId);
+  const isUserAnOwner = urlInstance.find((url) => url.owner.toString() === userId.toString());
   if (isUserAnOwner) {
     /**
      * Current user is an owner of this short url,
      * Update and return success message
      */
     await Url.findOneAndUpdate(
-        { shortUrl, owner: userId }, { title, description });
+        { shortUrl, owner: userId }, { title, description, shortUrl: updatedShortUrl });
     return { message: 'Details Updated successfully!' };
   } else {
     // Generate a new short url private to current user
     const longUrl = urlInstance[0].longUrl;
-    const shortenedUrl = await urlShortener(longUrl);
+    let shortenedUrl;
+    if (shortUrl === updatedShortUrl) {
+      shortenedUrl = await urlShortener(longUrl);
+    } else {
+      shortenedUrl = updatedShortUrl;
+    }
     // Make a new url object including the details and save it in the db
     const url = new Url({
       shortUrl: shortenedUrl,

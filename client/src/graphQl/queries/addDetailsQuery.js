@@ -1,8 +1,12 @@
 
-const addDetailsQuery = ({ title, description, shortUrl }) => {
+const addDetailsQuery = ({ title, description, shortUrl, updatedShortUrl }) => {
   const graphqlQuery = {
     query: `mutation{
-  addDetails(title:"${title}" , description : "${description}" , shortUrl : "${shortUrl}")
+  addDetails(
+    title:"${title}" , 
+    description : "${description}" , 
+    shortUrl : "${shortUrl}" , 
+    updatedShortUrl : "${updatedShortUrl}")
   {
     message
   }

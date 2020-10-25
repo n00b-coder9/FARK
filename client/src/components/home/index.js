@@ -67,13 +67,14 @@ function Home() {
   const history = useHistory();
 
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const userId = useSelector((state) => state.auth.user ? state.auth.user.userId : null);
 
   // Check if we have data from location's state.
   // This will be present if a non-logged in user wants to save the url
   const isShortenAndAuth = location.state && location.state.shortenDataAfterAuth;
   const shortenDataAfterAuth = isShortenAndAuth ? location.state.shortenDataAfterAuth : null;
-
+  const [updatedShortUrl, setUpdatedShortUrl] = useState(
+    isShortenAndAuth ? shortenDataAfterAuth.updatedShortUrl : '',
+  );
   const [longUrl, setLongUrl] = useState('');
   const [shortUrl, setShortUrl] = useState(isShortenAndAuth ? shortenDataAfterAuth.shortUrl : '');
   const [queryLongUrl, setQueryLongUrl] = useState('');
@@ -88,6 +89,11 @@ function Home() {
     isShortenAndAuth ? shortenDataAfterAuth.urlDescription : '',
   );
   const [isDetailsFormEnabled, setDetailsFormEnabled] = useState(true);
+  const [details, setDetails] = useState({
+    title: isShortenAndAuth ? shortenDataAfterAuth.urlTitle : '',
+    description: isShortenAndAuth ? shortenDataAfterAuth.urlDescription : '',
+    shortUrl: isShortenAndAuth ? shortenDataAfterAuth.shortUrl : '',
+  });
   const token = useSelector((state) => state.auth.authToken);
   const mediaMinSm = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -115,7 +121,7 @@ function Home() {
 
     // if error free then try to generate shortUrl
     try {
-      const graphqlQuery = shortenUrlQuery({ longUrl, userId: userId === null ? 'guest' : userId });
+      const graphqlQuery = shortenUrlQuery({ longUrl });
       const response = await axios.post('/', graphqlQuery, {
         headers: {
           Authorization: token,
@@ -124,6 +130,14 @@ function Home() {
 
       setShortUrl(response.data.data.shortenUrl.shortUrl);
       setQueryLongUrl(response.data.data.shortenUrl.longUrl);
+      setUpdatedShortUrl(response.data.data.shortenUrl.shortUrl);
+      setUrlDescription(response.data.data.shortenUrl.description);
+      setUrlTitle(response.data.data.shortenUrl.title);
+      setDetails({
+        title: response.data.data.shortenUrl.title,
+        description: response.data.data.shortenUrl.description,
+        shortUrl: response.data.data.shortenUrl.shortUrl,
+      });
       setFormEnabled(true);
       setDetailsFormEnabled(true);
       return setIsShortUrlGen(true);
@@ -156,10 +170,28 @@ function Home() {
         *  User is logged in, editing url details
         *  try updating the url details and handle the errors*/
       try {
+        const newDetails = {
+          title: urlTitle,
+          description: urlDescription,
+          shortUrl: updatedShortUrl,
+        };
+        /**  Check if details have been updated or not
+          *  If yes then proceed to send request to server
+          *  Otherwise display appropriate message to the user
+        */
+        if (JSON.stringify(newDetails) === JSON.stringify(details)) {
+          dispatch(setIsSnackbarOpen({
+            isOpen: true,
+            message: 'Update failed as fields have not been updated',
+            severity: 'error',
+          }));
+          return setDetailsFormEnabled(true);
+        }
         const graphqlQuery = addDetailsQuery({
           title: urlTitle,
           description: urlDescription,
-          shortUrl: shortUrl,
+          shortUrl,
+          updatedShortUrl,
         });
         const response = await axios.post('/', graphqlQuery, {
           headers: {
@@ -171,11 +203,20 @@ function Home() {
         dispatch(setIsSnackbarOpen({
           isOpen: true, message: message, severity: 'success',
         }));
+        setDetails(newDetails);
+        setShortUrl(updatedShortUrl);
       } catch (err) {
         // handle the errors
-        dispatch(setIsSnackbarOpen({
-          isOpen: true, message: 'An unknown error occured ', severity: 'error',
-        }));
+        const error = err.response.data.errors[0];
+        if (error.code === 422) {
+          dispatch(setIsSnackbarOpen({
+            isOpen: true, message: error.message, severity: 'error',
+          }));
+        } else {
+          dispatch(setIsSnackbarOpen({
+            isOpen: true, message: 'An unknown error occurred', severity: 'error',
+          }));
+        }
       }
     } else {
       /* User is not logged in, redirect to the auth page*/
@@ -183,7 +224,7 @@ function Home() {
         pathname: '/auth', state: {
           from: location,
           shortenDataAfterAuth: {
-            isShortUrlGen, urlTitle, urlDescription, shortUrl,
+            isShortUrlGen, urlTitle, urlDescription, shortUrl, updatedShortUrl,
           },
         },
       });
@@ -284,7 +325,10 @@ function Home() {
               title="Short url"
               label="Short url"
               placeholder="Short url"
-              value={shortUrl}
+              value={updatedShortUrl}
+              onChange={(e) => {
+                setUpdatedShortUrl(e.target.value);
+              }}
               style={{ flexGrow: 1 }}
             />
             {/* Button to copy short url */}

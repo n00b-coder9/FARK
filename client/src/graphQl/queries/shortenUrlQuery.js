@@ -6,6 +6,8 @@ const shortenUrlQuery = ({ longUrl }) => {
             shortenUrl(longUrl: "${longUrl}"){
                 shortUrl
                 longUrl
+                title
+                description
             }
         }`,
   };

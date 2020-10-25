@@ -52,12 +52,18 @@ module.exports = buildSchema(`
     type shortUrl{
         _id : ID!,
         longUrl : String!,
-        shortUrl : String!
+        shortUrl : String!,
+        title : String,
+        description : String
     }
     type RootMutation{
         signUp(UserInput : UserInputData) : GenericMessage!
         shortenUrl(longUrl : String!) : shortUrl!
-        addDetails(title: String , description : String , shortUrl: String!) : GenericMessage! 
+        addDetails(
+            title: String , 
+            description : String , 
+            shortUrl: String! , 
+            updatedShortUrl: String!) : GenericMessage! 
     }
     schema {
         query : RootQuery

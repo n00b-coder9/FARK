@@ -20,6 +20,7 @@ export const fetchLogin = createAsyncThunk(FETCH_LOGIN,
     async () => {
       const authTokenFromLocalStorage = localStorage.getItem('authToken');
       const authToken = authTokenFromLocalStorage !== 'null' ? authTokenFromLocalStorage : null;
+      setAuthToken(authToken);
       const isLoggedIn = authToken !== null;
       return {
         isLoggedIn,

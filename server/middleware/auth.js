@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
     req.isAuth = false;
     return next();
   }
-  // const token = token.split(' ')[1];
+
   let decodedToken;
   try {
     decodedToken = jwt.verify(token, process.env.TOKEN_PRIVATE_KEY);

@@ -22,6 +22,12 @@ const urlSchema = new Schema(
           ref: 'User',
         },
       ],
+      title: {
+        type: String,
+      },
+      description: {
+        type: String,
+      },
       writeaccess: [
         {
           type: mongoose.Types.ObjectId,

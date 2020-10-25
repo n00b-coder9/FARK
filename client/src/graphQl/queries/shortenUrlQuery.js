@@ -1,11 +1,13 @@
 
-const shortenUrlQuery = ({ longUrl, userId }) => {
+const shortenUrlQuery = ({ longUrl }) => {
   const graphqlQuery = {
     query: `
         mutation{
-            shortenUrl(longUrl: "${longUrl}" , userId:"${userId}"){
+            shortenUrl(longUrl: "${longUrl}"){
                 shortUrl
                 longUrl
+                title
+                description
             }
         }`,
   };

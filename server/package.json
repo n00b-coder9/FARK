@@ -17,6 +17,7 @@
     "express-validator": "^6.6.1",
     "graphql": "^15.3.0",
     "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.0.0",
     "mongodb": "^3.6.2",
     "mongoose": "^5.10.7",
     "validator": "^13.1.17"

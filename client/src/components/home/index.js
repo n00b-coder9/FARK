@@ -179,7 +179,9 @@ function Home() {
           *  If yes then proceed to send request to server
           *  Otherwise display appropriate message to the user
         */
-        if (JSON.stringify(newDetails) === JSON.stringify(details)) {
+        if (newDetails.title === details.title &&
+          newDetails.description === details.description &&
+          newDetails.shortUrl === details.shortUrl) {
           dispatch(setIsSnackbarOpen({
             isOpen: true,
             message: 'Update failed as fields have not been updated',
@@ -208,7 +210,7 @@ function Home() {
       } catch (err) {
         // handle the errors
         const error = err.response.data.errors[0];
-        if (error.code === 422) {
+        if (error.code === 422 || error.code === 409) {
           dispatch(setIsSnackbarOpen({
             isOpen: true, message: error.message, severity: 'error',
           }));

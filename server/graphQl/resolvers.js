@@ -102,11 +102,7 @@ const shortenUrl = async ({ longUrl }, request) => {
   // If exists return the same instance
   if (existingUrl !== null) {
     return {
-      longUrl: longUrl,
-      shortUrl: existingUrl.shortUrl,
-      title: existingUrl.title,
-      description: existingUrl.description,
-    };
+      ...existingUrl, longUrl };
   }
 
   // if url doesnt exist then create a new short url
@@ -150,7 +146,7 @@ const addDetails = async ({ title, description, shortUrl, updatedShortUrl }, req
     const urlInstance = await Url.find({ shortUrl: updatedShortUrl });
     if (urlInstance.length > 0) {
       const error = new Error('This Url is already used');
-      error.code = 422;
+      error.code = 409;
       throw error;
     }
   }

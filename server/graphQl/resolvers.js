@@ -102,7 +102,11 @@ const shortenUrl = async ({ longUrl }, request) => {
   // If exists return the same instance
   if (existingUrl !== null) {
     return {
-      ...existingUrl, longUrl };
+      shortUrl: existingUrl.shortUrl,
+      title: existingUrl.title,
+      description: existingUrl.description,
+      longUrl,
+    };
   }
 
   // if url doesnt exist then create a new short url

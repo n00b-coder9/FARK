@@ -1,5 +1,6 @@
+const Click = require('../models/Click');
 const Url = require('../models/Url');
-
+const axios = require('axios');
 // middleware to handle redirect requests
 const redirect = async (req, res) => {
   // Get the hash
@@ -16,6 +17,8 @@ const redirect = async (req, res) => {
       return res.sendStatus(404);
     }
 
+    const BASE_URL = 'http://api.ipstack.com/';
+    const key = process.env.ACCESS_KEY;
     // Regex expression to check whether long url starts with a protocol or not
     const protocolRegex = /^(ftp|http|https):\/\//;
     let longUrl = null;
@@ -31,10 +34,30 @@ const redirect = async (req, res) => {
     }
     res.redirect(longUrl);
     /**
-     * TODO : Update the logistics
+     * Update the logistics
      * after every redirection request
      */
+
+    const ip = (req.headers['x-forwarded-for'] || '').split(',').pop().trim() ||
+      req.connection.remoteAddress ||
+      req.socket.remoteAddress ||
+      req.connection.socket.remoteAddress;
+    const time = new Date().toISOString();
+    const apiEndpoint = BASE_URL + ip + '?access_key=' + key;
+    const location = await axios.get(apiEndpoint);
+    const click = new Click({
+      location: location.data,
+      time,
+      ip,
+    });
+    await click.save();
+    return Url.updateOne({ shortUrl: hash }, {
+      $push: {
+        clicks: click,
+      },
+    });
   } catch (err) {
+    return res.sendStatus(404);
   // Handle the async errors
   }
 };

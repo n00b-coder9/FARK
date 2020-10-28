@@ -63,6 +63,7 @@ mongoose
       app.listen(PORT, () => console.log(`Listening on port ${PORT}. /graphql for GraphiQl`));
     })
     .catch((err) => {
+      console.log(err);
       // If not connected, exit the process
       // eslint-disable-next-line no-console
       console.log('Error while connecting to mongodb: ', err);

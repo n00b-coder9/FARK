@@ -46,11 +46,10 @@ const redirect = async (req, res) => {
     const apiEndpoint = BASE_URL + ip + '?access_key=' + key;
     const location = await axios.get(apiEndpoint);
     const click = new Click({
-      location: location.data,
+      location: { city: location.data, country: location.data.country_name },
       time,
       ip,
     });
-    await click.save();
     return Url.updateOne({ shortUrl: hash }, {
       $push: {
         clicks: click,

@@ -4,6 +4,11 @@ const urlShortener = require('../utils/urlShortener');
 const validator = require('../validator');
 const User = require('../models/User');
 const Url = require('../models/Url');
+const { GraphQLDateTime } = require('graphql-iso-date');
+
+const customScalarResolver = {
+  Date: GraphQLDateTime,
+};
 
 // Sign in resolver
 const signUp = async ({ UserInput }) => {
@@ -194,6 +199,20 @@ const addDetails = async ({ title, description, shortUrl, updatedShortUrl }, req
     };
   }
 };
+
+// Resolver to fetch all the urls belonging to the current user
+const getUrls = async ({ }, request) => {
+  // Get the user id from the request
+  const { userId } = request;
+  if (!userId) {
+    const error = new Error('Please Login');
+    error.code = 407;
+    throw error;
+  }
+  const urls = await Url.find({ owner: userId });
+  // Retrieve all the urls owned by the user
+  return { urls };
+};
 module.exports = {
-  signUp, login, shortenUrl, addDetails,
+  signUp, login, shortenUrl, addDetails, getUrls, customScalarResolver,
 };

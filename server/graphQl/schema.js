@@ -1,34 +1,37 @@
 const { buildSchema } = require('graphql');
 
 module.exports = buildSchema(`
+    scalar Date
     type Url{
-        _id : ID!
-        ownerid : ID!
+        _id : String!
+        owner : String!
         longUrl : String!
         shortUrl : String!
-        expirydate : String!
-        createdAt : String!
-        readwriteaccess : Access!
+        expirydate : Date!
+        title : String
+        description : String
+        createdAt : Date!
+        updatedAt : Date!
+        readaccess : [User]
+        writeaccess : [User]
         clicks : [Click!]
     }
     type User{
-        _id : ID!
+        _id : String!
         name : String!
         email : String!
         password : String!
-        createdAt : String!
-        updatedAt : String!
-        urls : [Url!]
+        createdAt : Date!
+        updatedAt : Date!
     }
-
+    type location{
+        city : String
+        country : String
+    }
     type Click{
-        email : String!
-        clickedAt : String!
-        location : String!
-    }
-    type Access{
-        email : String!
-        permissions : [String!]!
+        ip : String!
+        time : Date!
+        location : location!
     }
     type AuthToken{
         token : String!
@@ -41,20 +44,19 @@ module.exports = buildSchema(`
         email : String!
         password : String!
     }
-    type PostData{
-        urls : [Url!]!
-        totalurls : Int!
-    }
     type RootQuery{
         login(email : String! , password : String!) : AuthToken!
-        urls : PostData!
+        getUrls: urls!
     }
     type shortUrl{
-        _id : ID!,
+        _id : String!,
         longUrl : String!,
         shortUrl : String!,
         title : String,
         description : String
+    }
+    type urls{
+        urls : [Url!]
     }
     type RootMutation{
         signUp(UserInput : UserInputData) : GenericMessage!

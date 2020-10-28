@@ -7,7 +7,7 @@
     "install": "concurrently --kill-others-on-fail \"cd ./client && npm install\" \"cd ./server && npm install\" \"cd ./redirection-server && npm install\"",
     "start-client": "cd ./client && npm start",
     "start-server": "cd ./server && npm start",
-    "start-redirection-server":"cd ./redirection-server && npm start",
+    "start-redirection-server": "cd ./redirection-server && npm start",
     "dev": "concurrently --kill-others-on-fail \"npm run start-server\" \"npm run start-client\" \"npm run start-redirection-server\"",
     "start": "npm run start-server",
     "test": "echo \"Error: no test specified\" && exit 1"

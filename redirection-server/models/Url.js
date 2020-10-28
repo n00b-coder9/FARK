@@ -12,9 +12,25 @@ const urlSchema = new Schema(
         type: String,
         required: true,
       },
+      title: {
+        type: String,
+      },
+      description: {
+        type: String,
+      },
       clicks: [{
-        type: mongoose.Types.ObjectId,
-        ref: 'Click',
+        location: {
+          type: 'Object',
+          required: true,
+        },
+        time: {
+          type: String,
+          required: true,
+        },
+        ip: {
+          type: String,
+          required: true,
+        },
       }],
       owner: {
         type: mongoose.Types.ObjectId,

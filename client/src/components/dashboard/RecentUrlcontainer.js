@@ -8,7 +8,7 @@ import React from 'react';
 import RecentUrlList from './RecentUrlList';
 const useStyles = makeStyles((theme) => ({
   container: {
-    width: '60%',
+    width: '90%',
     height: '100%',
   },
 }));

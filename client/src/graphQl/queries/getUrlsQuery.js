@@ -16,7 +16,7 @@ const getUrlsQuery = () => {
         time
         location{
           city
-          country
+          state
         }
       }
     }

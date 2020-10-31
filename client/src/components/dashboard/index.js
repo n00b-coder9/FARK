@@ -4,35 +4,27 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import RecentUrlContainer from './RecentUrlcontainer';
+import PieChart from './Graph/PieChart';
+import LineChart from './Graph/LineChart';
 const useStyles = makeStyles((theme) => ({
   root: {
+    'display': 'flex',
+    'height': '100%',
+    'width': 'min(740px, 100%)',
+
+  },
+  leftContainer: {
     display: 'flex',
     flexDirection: 'column',
-    height: '100%',
-    width: '80%',
-    padding: '20px',
-  },
-  toproot: {
-    display: 'flex',
-    flexDirection: 'row',
-    height: '40%',
     justifyContent: 'space-between',
+    flexGrow: 3,
   },
-  bottomroot: {
+  rightContainer: {
+    padding: '10px',
     display: 'flex',
-    flexDirection: 'row',
-    height: '60%',
-    justifyContent: 'space-between',
-  },
-  recentUrlcontainer: {
-    width: '30%',
-    textAlign: 'center',
-  },
-  leftview: {
-    width: '30%',
-  },
-  rightview: {
-    width: '70%',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    flexGrow: 2,
   },
 }));
 
@@ -41,22 +33,13 @@ export default function Dashboard() {
   return (
     <div className = {classes.root}>
       <CssBaseline />
-      <div className={classes.toproot}>
-        <div className={classes.leftview}>
-          <p>My URls</p>
-        </div>
-        <div className = {classes.rightview}>
-          <p>Details</p>
-        </div>
-      </div>
-      <div className={classes.bottomroot}>
+      <div className={classes.leftContainer}>
+        <LineChart />
         <RecentUrlContainer />
-        <div>
-          <p>Total clicks in the last month</p>
-        </div>
-        <div>
-          <p>Recently added urls</p>
-        </div>
+      </div>
+      <div className={classes.rightContainer}>
+        <PieChart variant='Recent-clicks' />
+        <PieChart />
       </div>
     </div>
   );

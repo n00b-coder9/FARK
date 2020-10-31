@@ -38,15 +38,18 @@ const redirect = async (req, res) => {
      * after every redirection request
      */
 
-    const ip = (req.headers['x-forwarded-for'] || '').split(',').pop().trim() ||
+    let ip = (req.headers['x-forwarded-for'] || '').split(',').pop().trim() ||
       req.connection.remoteAddress ||
       req.socket.remoteAddress ||
       req.connection.socket.remoteAddress;
+    if (ip === '::1') {
+      ip = '49.37.5.225';
+    }
     const time = new Date().toISOString();
     const apiEndpoint = BASE_URL + ip + '?access_key=' + key;
     const location = await axios.get(apiEndpoint);
     const click = new Click({
-      location: { city: location.data, country: location.data.country_name },
+      location: { city: location.data.city, state: location.data.region_name },
       time,
       ip,
     });

@@ -26,7 +26,7 @@ module.exports = buildSchema(`
     }
     type location{
         city : String
-        country : String
+        state : String
     }
     type Click{
         ip : String!

@@ -5,6 +5,7 @@ const validator = require('../validator');
 const User = require('../models/User');
 const Url = require('../models/Url');
 const { GraphQLDateTime } = require('graphql-iso-date');
+const { ObjectID } = require('mongodb');
 
 const customScalarResolver = {
   Date: GraphQLDateTime,
@@ -209,10 +210,18 @@ const getUrls = async ({ }, request) => {
     error.code = 407;
     throw error;
   }
-  const urls = await Url.find({ owner: userId });
+  const urls = await Url.aggregate([{
+    $match: {
+      owner: new ObjectID(userId),
+    },
+  }, {
+    $sort: { 'createdAt': -1 },
+  }],
+  );
   // Retrieve all the urls owned by the user
   return { urls };
 };
+
 module.exports = {
   signUp, login, shortenUrl, addDetails, getUrls, customScalarResolver,
 };

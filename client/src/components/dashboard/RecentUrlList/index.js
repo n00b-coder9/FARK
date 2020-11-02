@@ -1,6 +1,5 @@
-/* eslint-disable no-invalid-this */
-/* eslint-disable react/prop-types */
 import { makeStyles } from '@material-ui/core';
+import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUrls, setSelectedUrl } from '../../../redux/slices/urls';
@@ -117,5 +116,9 @@ const RecentUrlList = (props) => {
     </div>
   );
 };
-
+UrlItem.propTypes = {
+  url: PropTypes.object,
+  onClick: PropTypes.func,
+  active: PropTypes.bool,
+};
 export default RecentUrlList;

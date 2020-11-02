@@ -1,10 +1,14 @@
 import {
+  Button,
   Card,
   CardActions,
   CardHeader,
   makeStyles,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import RecentUrlList from './RecentUrlList';
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -14,7 +18,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const RecentUrlContainer = (props) => {
+  const theme = useTheme();
   const classes = useStyles();
+  const history = useHistory();
+  const mediaMinSm = useMediaQuery(theme.breakpoints.up('sm'));
+
+  const myUrlsHandler = () => {
+    history.push({
+      pathname: '/MyUrls',
+    });
+  };
+
+
   return (
     <div className={classes.container}>
       <Card style={{
@@ -32,7 +47,24 @@ const RecentUrlContainer = (props) => {
           display: 'flex',
           flexDirection: 'column',
         }}>
-          <RecentUrlList />
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              paddingTop: '4px',
+              paddingBottom: mediaMinSm ? '16px' : '6px',
+              width: '100%',
+            }}>
+            <RecentUrlList />
+          </div>
+          <div style={{
+            height: '10%',
+            justifyContent: 'flex-start',
+          }}>
+            <Button onClick={myUrlsHandler} color='secondary'>
+              See More
+            </Button>
+          </div>
         </CardActions>
       </Card>
     </div>);

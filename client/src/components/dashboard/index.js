@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   leftContainer: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     flexGrow: 3,
   },
   rightContainer: {
@@ -38,8 +38,8 @@ export default function Dashboard() {
         <RecentUrlContainer />
       </div>
       <div className={classes.rightContainer}>
-        <PieChart variant='Recent-clicks' />
-        <PieChart />
+        <PieChart variant='Clicks_by_location' />
+        <PieChart variant='Clicks_by_urls'/>
       </div>
     </div>
   );

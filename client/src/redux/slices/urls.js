@@ -21,6 +21,7 @@ export const fetchUrls = createAsyncThunk(FETCH_URLS,
         return { urls: [] };
       }
     });
+
 export const setSelectedUrl = createAsyncThunk(SET_SELECTED_URL,
     async (payload) => {
       const { selectedUrl } = payload;
@@ -29,6 +30,7 @@ export const setSelectedUrl = createAsyncThunk(SET_SELECTED_URL,
         selectedUrl,
       };
     });
+
 export const urlSlice = createSlice({
   name: 'urls',
   initialState: { urls: [], selectedUrl: null },

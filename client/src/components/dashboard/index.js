@@ -3,9 +3,11 @@ import {
   CssBaseline,
   makeStyles,
 } from '@material-ui/core';
-import RecentUrlContainer from './RecentUrlcontainer';
+import UrlContainer from './RecentUrlcontainer';
 import PieChart from './Graph/PieChart';
 import LineChart from './Graph/LineChart';
+
+// Create styles for this component
 const useStyles = makeStyles((theme) => ({
   root: {
     'display': 'flex',
@@ -23,11 +25,13 @@ const useStyles = makeStyles((theme) => ({
     padding: '10px',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
+    alignItems: 'center',
     flexGrow: 2,
   },
 }));
 
+// Function to render the Dashboard component
 export default function Dashboard() {
   const classes = useStyles();
   return (
@@ -35,7 +39,7 @@ export default function Dashboard() {
       <CssBaseline />
       <div className={classes.leftContainer}>
         <LineChart />
-        <RecentUrlContainer />
+        <UrlContainer />
       </div>
       <div className={classes.rightContainer}>
         <PieChart variant='Clicks_by_location' />

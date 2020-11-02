@@ -4,6 +4,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUrls, setSelectedUrl } from '../../../redux/slices/urls';
 import './index.css';
+
+// Create the styles for the components
 const useStyles = makeStyles((theme) => ({
   list: {
     display: 'flex',
@@ -12,9 +14,17 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
   },
 }));
+
+// Function to style and render an url item
 const UrlItem = ({ url, onClick, active }) => {
+  // Extract and store the date of creation
   const createdAt = new Date(url.createdAt).toDateString().substring(4);
+  /** Check if current url has been clicked or not
+   * if yes then then extract its length
+   * else store 0
+   */
   const clicksLength = url.clicks ? url.clicks.length : 0;
+
   return (
     <div className={active ? 'item active' : 'item'} onClick={onClick} style={{
       display: 'flex',
@@ -51,20 +61,28 @@ const UrlItem = ({ url, onClick, active }) => {
     </div>
   );
 };
-const RecentUrlList = (props) => {
+
+const UrlList = (props) => {
   const [selected, setSelected] = useState();
   const classes = useStyles();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.authToken);
   const urls = useSelector((state) => state.urls.urls);
+
+  /** Function to dispatch the fetch Urls reducer
+    * which updates the url list current component is using if neccessary
+    */
   const fetchingUrls = useCallback(() => {
     dispatch(fetchUrls({ token }));
   }, [dispatch, token]);
-  const UrlsbyRecency = urls.slice(0, 5);
+  // Slice out the five most recent Urls
+  const UrlsbyRecency = urls;
+
   useEffect(() => {
     fetchingUrls();
   },
   [fetchingUrls]);
+
   return (
     <div className={classes.list}>
 
@@ -79,9 +97,7 @@ const RecentUrlList = (props) => {
         alignItems: 'center',
         fontWeight: 'bold',
         textAlign: 'end',
-        borderBottom: 'solid',
-        borderBottomWidth: '0.25px',
-        borderBottomColor: 'grey',
+        borderBottom: '0.25px solid grey',
       }}> <div style={{
           textAlign: 'center',
           width: '20%',
@@ -107,18 +123,25 @@ const RecentUrlList = (props) => {
           <p>Clicks</p>
         </div>
       </div>
-      {UrlsbyRecency.map((url, index) => {
-        return <UrlItem url={url} key={index} active={index === selected} onClick={() => {
-          dispatch(setSelectedUrl({ selectedUrl: url }));
-          return setSelected(index);
-        }}/>;
-      })}
+      <div style={{
+        height: '75%',
+        overflowY: 'scroll',
+      }}>
+        {UrlsbyRecency.map((url, index) => {
+          return <UrlItem url={url} key={index} active={index === selected} onClick={() => {
+            dispatch(setSelectedUrl({ selectedUrl: url }));
+            return setSelected(index);
+          }}/>;
+        })}
+      </div>
     </div>
   );
 };
+
 UrlItem.propTypes = {
   url: PropTypes.object,
   onClick: PropTypes.func,
   active: PropTypes.bool,
 };
-export default RecentUrlList;
+
+export default UrlList;

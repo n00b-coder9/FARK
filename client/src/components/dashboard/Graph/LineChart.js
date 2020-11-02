@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
  * This renders a line chart plotting the no of clicks made per day
  */
 
-
 // The component to render the line chart
 function LineChart() {
   const [height, setHeight] = useState(window.innerHeight * 0.35);

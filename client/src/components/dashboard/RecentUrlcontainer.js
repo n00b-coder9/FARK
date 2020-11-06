@@ -12,8 +12,9 @@ import UrlList from './UrlList';
 // Create styles for the component
 const useStyles = makeStyles((theme) => ({
   container: {
-    width: '90%',
-    height: '100%',
+    display: 'flex',
+    flexGrow: 1,
+    flexBasis: '50%',
   },
 }));
 
@@ -26,13 +27,14 @@ const UrlContainer = (props) => {
   return (
     <div className={classes.container}>
       <Card style={{
-        height: '85%',
+        flex: 1,
+        height: '90%',
       }}>
         <CardHeader
           title = 'My Urls'
           style={{
             width: '100%',
-            height: '15%',
+            height: '10%',
             color: 'white',
             background: 'black',
           }} />

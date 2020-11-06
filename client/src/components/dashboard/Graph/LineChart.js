@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
+import React from 'react';
+import Highcharts from 'highcharts/highstock';
+import HighchartsReact from 'highcharts-react-official';
 import { useSelector } from 'react-redux';
 /**
  * Line Chart component
@@ -8,18 +9,9 @@ import { useSelector } from 'react-redux';
 
 // The component to render the line chart
 function LineChart() {
-  const [height, setHeight] = useState(window.innerHeight * 0.35);
-  const [width, setWidth] = useState(window.innerWidth * 0.5);
-  // Retreive the selected Url
+  // // Retreive the selected Url
   const selectedUrl = useSelector((state) => state.urls.selectedUrl);
   const clicks = selectedUrl ? selectedUrl.clicks : [];
-
-  useEffect(() => {
-    window.onresize = () => {
-      setWidth(window.innerWidth * 0.5);
-      setHeight(window.innerHeight * 0.35);
-    };
-  });
 
   // Group the Clicks according to date
   const groups = clicks.reduce((groups, click) => {
@@ -40,38 +32,51 @@ function LineChart() {
   });
 
   // Data to be passed to the chart
-  const state = {
-    labels: groupArrays.map((groups) => groups.date),
-    datasets: [{
-      label: 'Clicks',
-      fill: false,
-      lineTension: 0.5,
-      backgroundColor: 'rgba(75,192,192,1)',
-      borderColor: 'rgba(0,0,0,1)',
-      borderWidth: 2,
+  const options = {
+    chart: {
+      reflow: 'true',
+      BackgroundColor: '#fbfbfb',
+      plotBorderWidth: null,
+      plotShadow: false,
+      type: 'line',
+    },
+    title: {
+      text: 'Clicks by Date ',
+      align: 'left',
+    },
+    xAxis: {
+      title: {
+        text: 'Date',
+      },
+      categories: groupArrays.map((groups) => groups.date),
+    },
+    yAxis: {
+      title: {
+        text: 'Clicks',
+      },
+    },
+    series: [{
+      name: 'Clicks',
       data: groupArrays.map((groups) => groups.clicks.length),
     }],
   };
 
-  return (<div>
-    <Line
-      height={height}
-      width={width}
-      data={state}
-      options={{
-        maintainAspectRatio: 'false',
-        title: {
-          display: true,
-          text: 'Clicks per month',
-          fontSize: 20,
-        },
-        legend: {
-          display: true,
-          position: 'right',
-        },
-      }}
-    />
-  </div>);
+  return (
+    <div style={{
+      display: 'flex',
+      flexGrow: 1,
+      flexBasis: '30%',
+    }}>
+      <div style={{
+        width: '100% !important',
+        backgroundColor: '#fbfbfb',
+      }}>
+
+        <HighchartsReact
+          highcharts={Highcharts}
+          options={options} />
+      </div>
+    </div>);
 }
 
 export default LineChart;

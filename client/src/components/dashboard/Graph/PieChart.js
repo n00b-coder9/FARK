@@ -21,10 +21,10 @@ export default function PieChart(props) {
   const clicks = selectedUrl ? selectedUrl.clicks : [];
   let options = null;
 
-  // Check if the
+  // Check if the variant is one needing location
   if (variant === 'Clicks_by_location') {
     const groups = clicks.reduce((groups, click) => {
-      const location = click.location.state;
+      const location = click.location.city + ',' + click.location.state;
       if (!groups[location]) {
         groups[location] = [];
       }

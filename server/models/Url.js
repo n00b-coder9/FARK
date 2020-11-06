@@ -12,6 +12,10 @@ const urlSchema = new Schema(
         type: String,
         required: true,
       },
+      clicks: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Click',
+      }],
       owner: {
         type: mongoose.Types.ObjectId,
         ref: 'User',
@@ -22,12 +26,6 @@ const urlSchema = new Schema(
           ref: 'User',
         },
       ],
-      title: {
-        type: String,
-      },
-      description: {
-        type: String,
-      },
       writeaccess: [
         {
           type: mongoose.Types.ObjectId,

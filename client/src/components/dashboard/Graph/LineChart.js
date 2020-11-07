@@ -2,6 +2,7 @@ import React from 'react';
 import Highcharts from 'highcharts/highstock';
 import HighchartsReact from 'highcharts-react-official';
 import { useSelector } from 'react-redux';
+
 /**
  * Line Chart component
  * This renders a line chart plotting the no of clicks made per day
@@ -9,7 +10,7 @@ import { useSelector } from 'react-redux';
 
 // The component to render the line chart
 function LineChart() {
-  // // Retreive the selected Url
+  // Retreive the selected Url
   const selectedUrl = useSelector((state) => state.urls.selectedUrl);
   const clicks = selectedUrl ? selectedUrl.clicks : [];
 

@@ -44,8 +44,8 @@ export default function Dashboard() {
           <UrlContainer />
         </div>
         <div className={classes.rightContainer}>
-          <PieChart variant='Clicks_by_location' />
-          <PieChart variant='Clicks_by_urls'/>
+          <PieChart variant='CLICKS_BY_LOCATION' />
+          <PieChart variant='CLICKS_BY_URLS'/>
         </div>
       </main>
     </div>

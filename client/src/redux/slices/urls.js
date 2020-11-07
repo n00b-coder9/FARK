@@ -18,7 +18,7 @@ export const fetchUrls = createAsyncThunk(FETCH_URLS,
 
         return { urls };
       } catch (err) {
-        return { urls: [] };
+        return { error: true };
       }
     });
 
@@ -33,7 +33,7 @@ export const setSelectedUrl = createAsyncThunk(SET_SELECTED_URL,
 
 export const urlSlice = createSlice({
   name: 'urls',
-  initialState: { urls: [], selectedUrl: null },
+  initialState: { urls: [], selectedUrl: null, error: false },
   extraReducers: {
     [fetchUrls.fulfilled]: (state, action) => ({
       ...state,

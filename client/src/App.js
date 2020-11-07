@@ -13,7 +13,6 @@ import { fetchLogin } from './redux/slices/auth';
 
 import './App.css';
 import Dashboard from './components/dashboard';
-import { fetchUrls } from './redux/slices/urls';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,7 +45,6 @@ function App() {
   useEffect(() => {
     dispatch(fetchIsDrawerOpen());
     dispatch(fetchLogin());
-    dispatch(fetchUrls({ token: token }));
   }, [dispatch, token]);
 
   return (

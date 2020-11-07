@@ -10,7 +10,8 @@ import { useSelector } from 'react-redux';
  * 1. This plots the no of clicks made in the last month per location on a pieChart
  * 2. This plots the no of clicks made in the last month per url on a pieChart
  * @usage Just import it and pass a variant prop
- * whose value should be 'Clicks_by_location' for 1 else Clicks_by_urls for 2
+ * whose value should be `CLICKS_BY_LOCATION` for 1 else `CLICKS_BY_URLS` for 2
+ * @example <PieChart variant = `CLICKS_BY_LOCATION`||`CLICKS_BY_URLS`/>
  */
 
 export default function PieChart(props) {
@@ -22,7 +23,7 @@ export default function PieChart(props) {
   let options = null;
 
   // Check if the variant is one needing location
-  if (variant === 'Clicks_by_location') {
+  if (variant === 'CLICKS_BY_LOCATION') {
     const groups = clicks.reduce((groups, click) => {
       const location = click.location.city + ',' + click.location.state;
       if (!groups[location]) {
@@ -75,7 +76,7 @@ export default function PieChart(props) {
         data: groupArrays,
       }],
     };
-  } else if (variant === 'Clicks_by_urls') {
+  } else if (variant === 'CLICKS_BY_URLS') {
     const groups = urls.reduce((groups, url) => {
       const clicks = url.clicks ? url.clicks : [];
       const title = url.title ? url.title : url.shortUrl;

@@ -205,9 +205,10 @@ const addDetails = async ({ title, description, shortUrl, updatedShortUrl }, req
 const getUrls = async ({ }, request) => {
   // Get the user id from the request
   const { userId } = request;
+  // If user is not logged in  then ask him to login first
   if (!userId) {
     const error = new Error('Please Login');
-    error.code = 407;
+    error.code = 401;
     throw error;
   }
   const urls = await Url.aggregate([{

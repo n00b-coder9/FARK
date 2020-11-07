@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { setIsSnackbarOpen } from '../../../redux/slices/snackbar';
 import { fetchUrls, setSelectedUrl } from '../../../redux/slices/urls';
 import './index.css';
 
@@ -29,9 +30,7 @@ const UrlItem = ({ url, onClick, active }) => {
     <div className={active ? 'item active' : 'item'} onClick={onClick} style={{
       display: 'flex',
       justifyContent: 'space-between',
-      borderBottom: 'solid',
-      borderBottomWidth: '0.25px',
-      borderBottomColor: 'grey',
+      borderBottom: '0.25px solid grey',
       cursor: 'pointer',
     }}>
       <div style={{
@@ -68,21 +67,32 @@ const UrlList = (props) => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.authToken);
   const urls = useSelector((state) => state.urls.urls);
+  const error = useSelector((state) => state.urls.error);
 
   /** Function to dispatch the fetch Urls reducer
     * which updates the url list current component is using if neccessary
     */
   const fetchingUrls = useCallback(() => {
-    dispatch(fetchUrls({ token }));
+    // fetch the urls only if user is logged in
+    if (token) {
+      dispatch(fetchUrls({ token }));
+    }
   }, [dispatch, token]);
   // Slice out the five most recent Urls
-  const UrlsbyRecency = urls;
 
   useEffect(() => {
     fetchingUrls();
   },
   [fetchingUrls]);
 
+  // If there is some error in fetching urls then notify the user accordingly
+  if (error) {
+    dispatch(setIsSnackbarOpen({
+      status: 'open',
+      message: 'Some Unknown Error occured in fetching urls, Please Refresh',
+      severity: 'error',
+    }));
+  }
   return (
     <div className={classes.list}>
 
@@ -127,7 +137,7 @@ const UrlList = (props) => {
         height: '80%',
         overflowY: 'scroll',
       }}>
-        {UrlsbyRecency.map((url, index) => {
+        {urls.map((url, index) => {
           return <UrlItem url={url} key={index} active={index === selected} onClick={() => {
             dispatch(setSelectedUrl({ selectedUrl: url }));
             return setSelected(index);

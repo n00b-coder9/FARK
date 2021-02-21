@@ -12,6 +12,7 @@ import { fetchIsDrawerOpen } from './redux/slices/drawer';
 import { fetchLogin } from './redux/slices/auth';
 
 import './App.css';
+import Dashboard from './components/dashboard';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,12 +40,12 @@ function App() {
   const dispatch = useDispatch();
 
   const snackbarState = useSelector((state) => state.snackbar);
-
+  const token = useSelector((state) => state.auth.authToken);
   // Fetch the initial drawer open state
   useEffect(() => {
     dispatch(fetchIsDrawerOpen());
     dispatch(fetchLogin());
-  }, [dispatch]);
+  }, [dispatch, token]);
 
   return (
     <div className={classes.root}>
@@ -61,6 +62,9 @@ function App() {
           </Route>
           <Route exact path='/home'>
             <Home />
+          </Route>
+          <Route exact path = '/dashboard'>
+            <Dashboard />
           </Route>
           {/* Auth related routes */}
           <Route path='/auth'>

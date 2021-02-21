@@ -12,6 +12,8 @@
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.20.0",
     "graphql": "^15.3.0",
+    "highcharts": "^8.2.2",
+    "highcharts-react-official": "^3.0.0",
     "jwt-decode": "^3.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

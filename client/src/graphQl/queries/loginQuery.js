@@ -1,4 +1,4 @@
-const loginQuery=(authData)=>{
+const loginQuery = (authData) => {
   const graphqlQuery = {
     query: `
       query{

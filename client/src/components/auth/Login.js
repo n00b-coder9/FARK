@@ -20,6 +20,7 @@ import axios from '../../utils/axios';
 import loginQuery from '../../graphQl/queries/loginQuery';
 import { setIsSnackbarOpen } from '../../redux/slices/snackbar';
 import { setLogin } from '../../redux/slices/auth';
+import { fetchUrls } from '../../redux/slices/urls';
 
 // Define styles for this component
 const useStyles = makeStyles((theme) => ({
@@ -108,6 +109,7 @@ function Login() {
       // Get the jwt and store in redux and local storage
       const authToken = response.data.data.login.token;
       dispatch(setLogin({ isLoggedIn: true, authToken }));
+      dispatch(fetchUrls({ token: authToken }));
 
       history.replace(prevPath, location.state);
     } catch (err) {

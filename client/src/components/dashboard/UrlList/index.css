@@ -1,0 +1,10 @@
+.item{
+      cursor: 'pointer';
+      height: '12%';
+}
+.active{
+    display: flex;
+    width: '100%';
+    background-color: slategray;
+    color: white;
+}
